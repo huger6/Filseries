@@ -1,0 +1,1 @@
+VALID_SITUATIONS = ["watched", "to_watch"]

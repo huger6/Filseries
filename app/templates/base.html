@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Filseries{% block title %}{% endblock %}</title>
+
+    <!-- Meta tags -->
+    <meta name="description" content="">
+    <meta name="author" content="huger6">
+    <meta name="robots" content="follow">
+    <meta name="copyright" content="© 2025 huger6">
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="{{url_for('static', filename='icons/favicon.ico')}}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{url_for('static', filename='icons/favicon-32x32.png')}}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{url_for('static', filename='icons/favicon-16x16.png')}}">
+    <link rel="icon" type="image/png" sizes="192x192" href="{{url_for('static', filename='icons/android-chrome-192x192.png')}}">
+    <link rel="icon" type="image/png" sizes="512x512" href="{{url_for('static', filename='icons/android-chrome-512x512.png')}}">
+    <link rel="apple-touch-icon" href="{{url_for('static', filename='icons/apple-touch-icon.png')}}">
+    <link rel="manifest" href="{{url_for('static', filename='icons/site.webmanifest')}}">
+    <!-- Bootstrap icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Winky+Rough:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Winky+Rough:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
+    <!-- Core CSS theme -->
+    <link href="{{url_for('static', filename='css/styles.css')}}" rel="stylesheet">
+</head>
+<body>
+    <header class="flex-shrink-0">
+        <nav class="navbar navbar-expand-md fixed-top">
+            <div class="container-fluid d-flex align-items-center px-0 px-lg-2 px-xl-5">
+                <a class="navbar-brand me-auto ms-5" href="index.html">
+                    <img src="static/logo.png" alt="Logo" loading="eager" style="width: 75px; height: 75px;">
+                </a>
+                <div class="d-flex align-items-center gap-2 gap-xl-3 gap-xxl-4 ms-3">
+                    <!-- Social Media here -->
+                    <button class="navbar-toggler pe-4 custom-navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="Change navegation mode">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </button>
+                    <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
+                        <div class="offcanvas-header m-2 text-center justify-content-start gap-3" style="position: relative;">
+                            <a href="index.html" style="text-decoration: none;"><img class="user-select-false" src="static/logo.png" alt="Logo" loading="lazy" style="width: 60px; height: 60px;"></a>
+                            <a href="index.html" style="text-decoration: none; margin-left: 5px !important;"><h3 class="user-select-false content-title m-0 p-0" style="color: var(--navLinkColor); padding-top: 8px !important;" id="brand-name-offcanvas">Mesa Nobre</h3></a>
+                            <button type="button" class="close-button-hamburger-menu me-4" style="padding-top: 8px !important;" data-bs-dismiss="offcanvas" aria-label="Close"><i class="bi bi-x-lg"></i></button>
+                        </div>
+                        <div class="offcanvas-body pe-2 pe-xl-4 ms-3 ms-md-0">
+                            <ul class="navbar-nav justify-content-end flex-grow-1">
+                                <li class="nav-item">
+                                    <a class="nav-link mx-xl-1 navbar-option user-select-false" style="color: var(--navLinkColor) !important;" href="index.html">Home</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link mx-xl-1 navbar-option user-select-false" href="menu.html">Menu</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link mx-xl-1 navbar-option user-select-false" href="contact.html">Contactos</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link mx-xl-1 navbar-option user-select-false" href="galery.html">Galeria</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+</body>
+</html>
