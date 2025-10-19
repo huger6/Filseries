@@ -33,6 +33,7 @@ The current repository represents a **reorganized and refactored version**, wher
 **Frontend:**  
 - HTML, CSS, JavaScript  
 - React (for dynamic components, e.g., search pagination)  
+- Bootstrap 5 
 
 **Backend:**  
 - Python  

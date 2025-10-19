@@ -1,8 +1,12 @@
-from flask import Blueprint, flash, redirect, url_for, jsonify, render_template, request
+from flask import Blueprint, flash, redirect, url_for, jsonify, render_template, request, get_flashed_messages
 from flask_login import login_required, current_user
-from app.models.models import db
+from app.models.user import db
+from app.constants import LIMIT_PER_PAGE, SORT_BY_FILTERS, SORT_BY_ORDERS
+from app.constants import GENRES_DEFAULT, TITLE_TYPE_DEFAULT
+from app.validations import validate_title_length, validate_page, validate_limit_per_page
+from app.validations import validate_sort_by, validate_genres, validate_years, validate_ratings
 
-titles_bp = Blueprint("titles_bp", __name__, template_folder="../templates/titles")
+titles_bp = Blueprint("titles", __name__, template_folder="../templates/titles")
 
 @titles_bp.route("/search", methods=["GET", "POST"])
 def search():
@@ -36,35 +40,19 @@ def search():
         if not titleType:
             titleType = TITLE_TYPE_DEFAULT
 
-        #Validations
-        if not MIN_TITLE_LENGTH < len(title) < MAX_TITLE_LENGTH:
-            raise TitleLenghtInvalid(f"Current length: {len(title)}; Minimum length: {MIN_TITLE_LENGTH}; Maximum length: {MAX_TITLE_LENGTH}")
-        
-        if page < 1:
-            raise SearchError(f"Page '{page}' is invalid")
-        
-        if not MIN_LIM_PER_PAGE <= limit <= LIMIT_PER_PAGE:
-            raise SearchError(f"Limit per page is invalid: {limit}")
-        
-        if sort_by[0] not in SORT_BY_FILTERS:
-            raise SearchError(f"Sorting method isn't supported: {sort_by[0]}")
-        if sort_by[1] not in SORT_BY_ORDERS:
-            raise SearchError(f"Sorting order isn't supported: {sort_by[1]}")
-
-        for genre in genres:
-            if genre not in GENRES_ALLOWED:
-                genres.remove(genre)
-
-        if years:
-            if len(years) != 2:
-                raise SearchError("Year's interval is invalid")
-            for year in years:
-                if year > CURRENT_YEAR:
-                    raise SearchError(f"Year({year}) is bigger than the current year({CURRENT_YEAR})")
-            
-        if ratings:
-            if not (0 <= ratings[0] <= 10 and 0 <= ratings[1] <= 10):
-                raise SearchError("Ratings must be 0-10")
+        # Validations
+        try:
+            validate_title_length(title)
+            validate_page(page)
+            validate_limit_per_page(limit)
+            validate_sort_by(sort_by[0], sort_by[1])
+            validate_genres(genres)
+            validate_years(years)
+            validate_ratings(ratings)
+        except Exception as e:
+            get_flashed_messages()
+            flash(str(e), 'error')
+            return render_template("search.html", page="search")
 
         data = search_db(current_user.get_id() if current_user.is_authenticated else None,
                     title, page, limit, sort_by, genres, years, ratings, titleType)
@@ -89,17 +77,21 @@ def search():
         print(f"Procurar dados: {end_time - mid_time:.2f}")
         return render_template("search.html", results=data)
     
-@titles_bp.route("/title", methods=["GET"])
-def title():
-    if request.method == "GET":
-        tconst = request.args.get("id")
-        if not tconst:
-            return render_template("title.html", title="Title not found", results=None)
+# @titles_bp.route("/title", methods=["GET"])
+# def title():
+#     if request.method == "GET":
+#         tconst = request.args.get("id")
+#         if not tconst:
+#             return render_template("title.html", title="Title not found", results=None)
 
-        user_id = current_user.get_id() if current_user.is_authenticated else None
-        results = getTitleInformationDetailed(tconst, user_id)
-        print(f"{results}!")
-        if results:
-            return render_template("title.html", title=results[0]["primaryTitle"], results=results)
-    return render_template("title.html", title="Title not found", results=None)
+#         user_id = current_user.get_id() if current_user.is_authenticated else None
+#         results = getTitleInformationDetailed(tconst, user_id)
+#         print(f"{results}!")
+#         if results:
+#             return render_template("title.html", title=results[0]["primaryTitle"], results=results)
+#     return render_template("title.html", title="Title not found", results=None)
     
+
+@titles_bp.route("/search", methods=["GET", "POST"])
+def search():
+    return render_template("search.html", page="search")

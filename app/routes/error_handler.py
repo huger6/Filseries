@@ -1,7 +1,8 @@
 from flask import Blueprint, redirect, url_for, jsonify, render_template
+from app.constants import app_constants, http_constants
 
 
-error_handler_bp = Blueprint("error_handler_bp", __name__, template_folder="../templates/error-handler")
+error_handler_bp = Blueprint("error_handler", __name__, template_folder="../templates/error-handler")
 
 #User Error (400)
 
@@ -32,8 +33,4 @@ def handle_acess_denied(e):
 
 @error_handler_bp.errorhandler(ValueError)
 def handle_ValueError(e):
-    return jsonify({'error': str(e)}), 500
-
-@error_handler_bp.errorhandler(Error) #From sqlite3
-def handle_db_error(e):
     return jsonify({'error': str(e)}), 500

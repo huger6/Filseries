@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+<!-- Ttile -->
+{% block title %}
+    &nbsp;-&nbsp;Login
+{% endblock %}
+
+<!-- CSS -->
+{% block css %}
+    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/login.css')}}">
+{% endblock %}
+
+{% block main %}
+    <div class="container-fluid d-flex flex-column justify-content-center align-items-center mb-2">
+        <div class="d-flex flex-column col-12 col-xl-8 p-5 gap-3" id="auth-container">
+            <form class="needs-validation" method="post" action="{{url_for('auth.login')}}" id="contact-form" novalidate>
+                <div class="row">
+                    <div class="col-lg-10 offset-lg-1">
+                        <div class="d-flex flex-column align-self-start">
+                            <h1 class="mb-4" id="contact-title">LOGIN</h1>
+                            <div class="form-box mb-3">
+                                <input class="form-input form-control" type="text" name="name" placeholder="Username" autocomplete="off" autocapitalize="words" minlength="3" maxlength="12" pattern="^[A-Za-z0-9_]{3,12}$" required>
+                                <div class="invalid-feedback">
+                                    Please insert your username.
+                                </div>
+                            </div>
+                            <div class="form-box mb-3">
+                                <input class="form-input form-control" type="password" name="password" placeholder="Confirm your password" autocomplete="off" autocapitalize="words" minlength="3" maxlength="12" pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{6,16}$" required>
+                                <div class="invalid-feedback">
+                                    Please insert your password.
+                                </div>
+                            </div>
+                            <div class="d-flex flex-column justify-content-center other-links">
+                                <span>Don't have an account? <a href="{{url_for('auth.register')}}">Register now</a></span>
+                                <span>Forgot your password? <a href="{{url_for('auth.change_password')}}">Recover your password</a></span>
+                            </div>
+                            <div class="form-box mb-3">
+                                <input class="btn btn-lg" id="submit-form-button" type="submit" name="submit" value="Enviar">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+
+<!-- Scripts -->
+{% block js %}
+    <script src="{{url_for('static', filename='js/auth.js')}}"></script>
+{% endblock %}

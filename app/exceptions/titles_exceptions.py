@@ -8,7 +8,7 @@ class SeriesError(MediaError):
     """Base exception for series operations."""
     pass
 
-class TitleLenghtInvalid(MediaError):
+class TitleLengthInvalid(MediaError):
     """Title doesn't meet the minimum length for search purposes."""
     pass
 

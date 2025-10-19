@@ -1,64 +1,61 @@
-from flask import Blueprint, flash, redirect, url_for, jsonify, render_template, request
+from flask import Blueprint, flash, redirect, url_for, jsonify, render_template, request, get_flashed_messages
 from flask_login import login_required, current_user, login_user, logout_user
-from app.models.models import bcrypt, db, User
+from app.validations import validateRegister, validateLogin
+from app.exceptions import RegisterError, LoginError
 
-auth_bp = Blueprint("auth_bp", __name__, template_folder='../templates/auth')
+auth_bp = Blueprint("auth", __name__, template_folder='../templates/auth')
+
+
+@auth_bp.route("/login", methods=["GET", "POST"])
+def login():
+    if current_user.is_authenticated:
+        return redirect(url_for('main.home'))
+    
+    if request.method == "POST":
+        username = request.form.get("username")
+        pw = request.form.get("password")
+
+        try:
+            if validateLogin(username, pw):
+                return redirect(url_for('main.home'))
+        except LoginError as e:
+            return render_template("login.html", page="login", error=e)
+
+    return render_template("login.html", page="login")
+
+@auth_bp.route("/logout", methods=["GET", "POST"])
+def logout():
+    if current_user.get_id() == None:
+        return redirect(url_for('main.home'))
+    
+    logout_user()
+
+    get_flashed_messages() #clean buffer
+    flash("You have been logged out. See you soon!", "success")
+    return redirect(url_for('main.home'))
 
 @auth_bp.route("/register", methods=["GET", "POST"])
 def register():
-    # if current_user.is_authenticated:
-    #     flash("User is authenticated in register path")
-    #     redirect(url_for("app.home"))
-
-    # form = RegisterForm()
-
-    # if form.validate_on_submit():
-    #     User.create_user(email=form.email.data, username=form.username.data, password=form.password.data)
-    #     return redirect(url_for("app.login"))
-    
-    return render_template("register.html", form=form)
-    
-@auth_bp.route("/login", methods=["GET", "POST"])
-def login():
-    #User is already logged in
     if current_user.is_authenticated:
-        return redirect(url_for("app.home"))
-    
-    # form = LoginForm()
-    # if form.validate_on_submit():
-    #     user = User.query.filter_by(username=form.username.data).first() #Might cause a BUG if there are many identical emails
-    #     if user:
-    #         if bcrypt.check_password_hash(user.pass_hash, form.password.data):
-    #             login_user(user)
-    #             return redirect(url_for("app.home"))
-    #         else:
-    #             flash("Invalid email")
-    
-    return render_template("login.html", form=form)  
+        return redirect(url_for('main.home'))
 
-@auth_bp.route("/logout", methods=["GET", "POST"])
-@login_required
-def logout():
-    if current_user.get_id() == None:
-        return redirect(url_for('app.home'))
-    logout_user()
-    return render_template("logout.html")
+    if request.method == "POST":
+        name = request.form.get("Name")
+        username = request.form.get("username")
+        pw = request.form.get("password")
+        pw_confirm = request.form.get("confirm_password")
 
-# @auth_bp.route("/change-password", methods=["GET", "POST"])
-# @login_required
-# def change_password():
-#     if request.method == "POST":
-#         old_password = request.form["old_password"]
-#         new_password = request.form["new_password"]
+        try:
+            if validateRegister(username, name, pw, pw_confirm):
+                return redirect(url_for('auth.login'))
+        except RegisterError as e:
+            return render_template("register.html", page="register", error=e)
 
-#         if not bcrypt.check_password_hash(current_user.pass_hash, old_password):
-#             return redirect(url_for("app.change-password"))
-        
-#         hashed_new_password = bcrypt.generate_password_hash(new_password).decode("utf-8")
-#         current_user.pass_hash = hashed_new_password
-#         db.session.commit()
+    return render_template("register.html", page="register")
 
-#         flash("Password alterada com sucesso!", "sucess")
-#         return redirect(url_for("app.home"))
-    
-#     return render_template()  #TODO
+@auth_bp.route("/change-password")
+def change_password():
+    return render_template("changePassword.html", pages="change-password")
+
+def validateRegisterInfo():
+    return True

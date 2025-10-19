@@ -34,22 +34,9 @@ async def get_title_info_on_api(session, tconst: str, titleType: str):
             poster_path = ""
 
             if titleType in data and len(data[titleType]) > 0:
-                result = data[titleType][0] 
+                result = data[titleType][0]
 
-                backdrop_path = result.get("backdrop_path") or ""
-                overview = result.get("overview") or ""
-                poster_path = result.get("poster_path") or ""
-
-                save_title_info(tconst, backdrop_path, overview, poster_path)
-
-                return {
-                    "tconst": tconst,
-                    "backdrop_path": backdrop_path,
-                    "overview": overview,
-                    "poster_path": poster_path,
-                }
-            
-            save_title_info(tconst, backdrop_path, overview, poster_path)
+                return {"tconst": tconst, **result}
             return {"tconst": tconst, "backdrop_path": "", "overview": "", "poster_path": ""}
 
     except Exception as e:
@@ -61,6 +48,30 @@ async def get_multiple_titles_info(titles):
     async with aiohttp.ClientSession() as session:
         tasks = [get_title_info_on_api(session, title["tconst"], title["titleType"]) for title in titles]
         return await asyncio.gather(*tasks)
+
+async def search_title_and_get_tconst(session, query: str, title_type: str):
+    base = "https://api.themoviedb.org/3"
+    search_type = "movie" if title_type == "movie" else "tv"
+
+    search_url = f"{base}/search/{search_type}?api_key={api_key}&query={query}"
+
+    async with session.get(search_url) as resp:
+        data = await resp.json()
+        if not data["results"]:
+            return None  # não encontrou nada
+
+        # pegar o primeiro resultado
+        result = data["results"][0]
+        tmdb_id = result["id"]
+
+    # agora buscar o imdb_id
+    external_url = f"{base}/{search_type}/{tmdb_id}/external_ids?api_key={api_key}"
+
+    async with session.get(external_url) as resp:
+        ids_data = await resp.json()
+        imdb_id = ids_data.get("imdb_id")
+
+    return {"tmdb_id": tmdb_id, "imdb_id": imdb_id, "data": result}
 
 
 def getTitleInfo(apiResult):
