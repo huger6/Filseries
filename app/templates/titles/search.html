@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+<!-- Title -->
+{% block title %}
+&nbsp;-&nbsp;Results for "{{ query }}"
+{% endblock %}
+
+<!-- CSS -->
+{% block css %}
+    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/search.css')}}">
+{% endblock %}
+
+<!-- Scripts -->
+{% block head_scripts %}
+    <script>
+        const defaultPoster = "{{url_for('static', filename='img/defaultPoster.svg')}}";
+    </script>
+{% endblock %}
+
+{% block main %}
+    <div id="search-results" data-results='{{ (results | tojson | safe) if results else "[]" }}'>
+        <h4>Results for "{{ query }}":</h2>
+        <div class="results">
+            {% for result in results %}
+                <a class="title" id="title-{{ result.id }}" alt="{{ result.title }}" href="{{url_for('titles.title', media_type=result.media_type, id=result.id)}}">
+                    <h4 class="primary-title">{{ result.title }}</h3>
+                    <div class="bottom-row">
+                        <span class="release-date">{{ result.release_date if result.release_date else "n/a" }}</span>
+                        <span class="average-rating">{{ result.vote_average if result.vote_average else "n/a" }}&nbsp;<i class="bi bi-star"></i></span>
+                    </div>
+                </a>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
+
+<!-- Scripts -->
+{% block js %}
+    <script src="{{url_for('static', filename='js/search.js')}}"></script>
+{% endblock %}

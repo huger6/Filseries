@@ -7,12 +7,12 @@ class Movies(db.Model):
     __tablename__ = "movies"
 
     movie_id : Mapped[int] = mapped_column(Integer, primary_key=True)
-    movie_tconst = Column(String(15), unique=True, index=False)
+    movie_tconst : Mapped[String | None] = mapped_column(String(15), unique=True, index=False, nullable=True)
 
 
 class Series(db.Model):
     __tablename__ = "series"
 
     serie_id : Mapped[int] = mapped_column(Integer, primary_key=True)
-    serie_tconst = Column(String(15), unique=True, index=False)
+    serie_tconst : Mapped[String | None] = mapped_column(String(15), unique=True, index=False, nullable=True)
 

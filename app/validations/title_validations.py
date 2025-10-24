@@ -8,8 +8,10 @@ from app.constants import GENRES_ALLOWED
 #Exceptions
 from app.exceptions import TitleLengthInvalid, SearchError
 
-def validate_title_length(title: str) -> None:
+def validate_title(title: str) -> None:
     """Validate that the title length is within acceptable bounds."""
+    if title is None:
+        raise TitleLengthInvalid("Title cannot be None")
     if not MIN_TITLE_LENGTH < len(title) < MAX_TITLE_LENGTH:
         raise TitleLengthInvalid(f"Current length: {len(title)}; Minimum length: {MIN_TITLE_LENGTH}; Maximum length: {MAX_TITLE_LENGTH}")
 

@@ -26,11 +26,11 @@ def validateRegister(username, name, pw, pw_confirm, email : None):
     return validateName(name) and validateUsername(username) and validatePassword(pw) and validatePasswordConfirm(pw, pw_confirm) and validateEmail(email)
 
 def validateLogin(username, pw):
-    user = User.query.filter_by(username).first()
+    user = User.query.filter_by(username=username).first()
     if not user:
         raise LoginError("Username not found!")
     
     if not bcrypt.check_password_hash(user.pass_hash, pw):
         raise LoginError("Password is incorrect!")
 
-    return True
+    return user

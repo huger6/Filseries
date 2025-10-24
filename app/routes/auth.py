@@ -2,6 +2,7 @@ from flask import Blueprint, flash, redirect, url_for, jsonify, render_template,
 from flask_login import login_required, current_user, login_user, logout_user
 from app.validations import validateRegister, validateLogin
 from app.exceptions import RegisterError, LoginError
+from app.models import User
 
 auth_bp = Blueprint("auth", __name__, template_folder='../templates/auth')
 
@@ -16,10 +17,13 @@ def login():
         pw = request.form.get("password")
 
         try:
-            if validateLogin(username, pw):
-                return redirect(url_for('main.home'))
+            user = validateLogin(username, pw)
+            login_user(user) 
+            return redirect(url_for('main.home'))
         except LoginError as e:
-            return render_template("login.html", page="login", error=e)
+            get_flashed_messages() #clean buffer
+            flash(f"{e}", "error")
+            return render_template("login.html", page="login")
 
     return render_template("login.html", page="login")
 

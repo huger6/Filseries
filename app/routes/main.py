@@ -5,7 +5,6 @@ main_bp = Blueprint("main", __name__, template_folder="../templates/main")
 
 @main_bp.route("/")
 def home():
-    flash("Teste, Olá!")
     return render_template("home.html", page="home")
 
 @main_bp.route("/about")
