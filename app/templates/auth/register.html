@@ -12,7 +12,7 @@
 {% block main %}
     <div class="container-fluid d-flex flex-column justify-content-center align-items-center mb-3">
         <div class="d-flex flex-column col-12 col-xl-8 p-5 gap-3" id="auth-container">
-            <form class="needs-validation" method="post" action="{{url_for('auth.login')}}" id="contact-form" novalidate>
+            <form class="needs-validation" method="post" action="{{url_for('auth.register')}}" id="contact-form" novalidate>
                 <div class="row">
                     <div class="col-lg-10 offset-lg-1">
                         <div class="d-flex flex-column align-self-start">
@@ -24,17 +24,17 @@
                                 </div>
                             </div>
                             <div class="form-box mb-3">
-                                <input class="form-input form-control" type="text" name="name" placeholder="Username" autocomplete="off" autocapitalize="words" minlength="5" maxlength="100" pattern="^[A-Za-z0-9_]{3,12}$" required>
+                                <input class="form-input form-control" type="text" name="username" placeholder="Username" autocomplete="off" autocapitalize="words" minlength="5" maxlength="100" pattern="^[A-Za-z0-9_]{3,12}$" required>
                                 <div class="invalid-feedback">
                                     Please insert your username.
                                 </div>
                             </div>
-                            <div class="form-box mb-3">
+                            <!-- <div class="form-box mb-3">
                                 <input class="form-input form-control" type="email" name="email" placeholder="Email" autocomplete="off" minlength="6" maxlength="254">
                                 <div class="invalid-feedback">
                                     Please insert a valid email.
                                 </div>
-                            </div>
+                            </div> -->
                             <div class="form-box mb-3">
                                 <input class="form-input form-control" id="password" type="password" name="password" placeholder="Password" autocomplete="off" minlength="3" maxlength="12" pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{6,16}$" required>
                                 <div class="invalid-feedback">

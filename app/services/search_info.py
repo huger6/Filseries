@@ -1,4 +1,3 @@
-import asyncio
 import aiohttp
 from app.services.api_info import search_title_on_api, get_title_info_on_api, get_title_tconst_on_api
 from app.services.db_info import fetch_user_marks_id, fetch_user_marks
@@ -23,7 +22,7 @@ async def search_title(query: str, search_type: str, user_id):
             entry_id = entry["id"]
             entry["seen"] = entry_id in titles_seen
             entry["in_watchlist"] = entry_id in titles_watchlist
-            entry["release_date"] = str(_format_date(entry["release_date"])) # Format date
+            entry["release_date"] = _format_date(entry["release_date"]) # Format date
 
         return filtered_data
     

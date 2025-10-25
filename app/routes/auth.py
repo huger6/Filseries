@@ -2,7 +2,7 @@ from flask import Blueprint, flash, redirect, url_for, jsonify, render_template,
 from flask_login import login_required, current_user, login_user, logout_user
 from app.validations import validateRegister, validateLogin
 from app.exceptions import RegisterError, LoginError
-from app.models import User
+from app.services.db_info import register_new_user
 
 auth_bp = Blueprint("auth", __name__, template_folder='../templates/auth')
 
@@ -42,16 +42,20 @@ def logout():
 def register():
     if current_user.is_authenticated:
         return redirect(url_for('main.home'))
-
     if request.method == "POST":
-        name = request.form.get("Name")
+        name = request.form.get("name")
         username = request.form.get("username")
         pw = request.form.get("password")
         pw_confirm = request.form.get("confirm_password")
-
+        
+        print(name)    
         try:
             if validateRegister(username, name, pw, pw_confirm):
-                return redirect(url_for('auth.login'))
+                print("Validate register True")
+                if register_new_user(username, name, pw):
+                    return redirect(url_for('auth.login'))
+                else:
+                    raise RegisterError("An internal error has ocurred. Please try again later.")
         except RegisterError as e:
             return render_template("register.html", page="register", error=e)
 
@@ -61,5 +65,6 @@ def register():
 def change_password():
     return render_template("changePassword.html", pages="change-password")
 
-def validateRegisterInfo():
-    return True
+@auth_bp.route("/user")
+def user():
+    return render_template("user.html", page="user")

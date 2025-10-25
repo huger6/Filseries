@@ -44,7 +44,8 @@
 
 .primary-title {
     display: flex;
-    font-size: 1rem;
+    font-size: 1.1rem;
+    -webkit-text-stroke: .6px #000000;
     font-weight: 500;
     margin-bottom: 10px;
     color: var(--secondaryColor);
@@ -61,18 +62,19 @@
     margin-bottom: 4px;
     padding: 3px;
     width: 60%;
+    -webkit-text-stroke: .4px #000000;
 }
 
 .release-date {
     display: flex;
-    font-size: 0.75rem;
+    font-size: 0.85rem;
     color: #e7e7e7;
     align-self: center;
 }
 
 .average-rating {
     display: flex;
-    font-size: 0.75rem;
+    font-size: 0.85rem;
     color: #e7e7e7;
     align-self: center;
 }

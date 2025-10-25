@@ -1,6 +1,4 @@
 from dotenv import load_dotenv
-import aiohttp
-import asyncio
 from config import Config
 
 api_key = Config.API_KEY

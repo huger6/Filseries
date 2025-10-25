@@ -1,4 +1,5 @@
 from app.extensions import db
+from app.extensions import bcrypt
 from sqlalchemy import text
 
 def fetch_user_marks_id(user_id: int, tmdb_ids: list[int]):
@@ -90,3 +91,17 @@ def fetch_user_marks(user_id: int, id: int, type: str):
 
     return {"seen": seen, "watchlist": watchlist}
 
+def register_new_user(username, name, pw):
+    if not username or not name or not pw:
+        return False
+    hashed_password = bcrypt.generate_password_hash(pw).decode("utf-8")
+    try:
+        db.session.execute(
+            text("INSERT INTO users (name, username, pass_hash) VALUES (:name, :username, :pass_hash)"), 
+            {"name": name, "username": username, "pass_hash": hashed_password}
+        )
+        db.session.commit()
+    except Exception:
+        return False
+
+    return True
