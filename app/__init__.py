@@ -13,8 +13,8 @@ def create_app():
         app.register_blueprint(bp)
 
     # Create tables if they don't exist
-    # with app.app_context():
-    #     db.create_all()
+    with app.app_context():
+        db.create_all()
 
     login_manager.init_app(app)
     login_manager.login_view = "auth_bp.login" #redirects to login if user not logged in

@@ -1,8 +1,6 @@
 from flask import Blueprint, flash, redirect, url_for, jsonify, render_template, request, get_flashed_messages
 from flask_login import login_required, current_user
 import asyncio
-# Database
-from app.models.user import db
 # Constants
 from app.constants import LIMIT_PER_PAGE, SORT_BY_FILTERS, SORT_BY_ORDERS
 from app.constants import GENRES_DEFAULT
@@ -10,7 +8,7 @@ from app.constants import GENRES_DEFAULT
 from app.validations import validate_title, validate_page, validate_limit_per_page
 from app.validations import validate_sort_by, validate_genres, validate_years, validate_ratings
 # API
-from app.services.api_info import search_title_on_api
+from app.services.search_info import search_title
 
 titles_bp = Blueprint("titles", __name__, template_folder="../templates/titles")
 
@@ -58,10 +56,10 @@ def search():
             flash(str(e), 'error')
             return render_template("search.html", page="search")
 
-        data = asyncio.run(search_title_on_api(query=title, title_type=titleType))
+        user_id = current_user.get_id() if current_user.is_authenticated else None
+        data = asyncio.run(search_title(query=title, search_type=titleType, user_id=user_id))
         print(data)
-
-        return render_template("search.html", results=data["results"], query=title, page="search")
+        return render_template("search.html", results=data, query=title, page="search")
     
 @titles_bp.route("/title/<string:media_type>/<int:id>", methods=["GET"])
 def title(media_type, id):

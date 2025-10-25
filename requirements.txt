@@ -5,3 +5,5 @@ flask-login
 email-validator
 python-dotenv
 aiohttp
+pymysql
+cryptography
