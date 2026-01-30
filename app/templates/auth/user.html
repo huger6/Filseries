@@ -1,19 +1,55 @@
 {% extends "base.html" %}
-<!-- Ttile -->
+<!-- Title -->
 {% block title %}
-    &nbsp;-&nbsp;Personal area
+- My Account
 {% endblock %}
 
 <!-- CSS -->
 {% block css %}
-    <!-- <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/login.css')}}"> -->
+    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/auth.css')}}">
 {% endblock %}
 
 {% block main %}
+<div class="user-page">
+    <div class="user-header">
+        <div class="user-avatar">
+            <i class="bi bi-person-fill"></i>
+        </div>
+        <div class="user-info">
+            <h1>{{ current_user.name if current_user.name else current_user.username }}</h1>
+            <p>@{{ current_user.username }}</p>
+        </div>
+    </div>
     
+    <div class="user-stats">
+        <div class="stat-card">
+            <div class="stat-number">0</div>
+            <div class="stat-label">Titles Watched</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">0</div>
+            <div class="stat-label">In Watchlist</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">0</div>
+            <div class="stat-label">Hours Watched</div>
+        </div>
+    </div>
+    
+    <div class="user-actions-section">
+        <a href="{{url_for('watchlist.watchlist')}}" class="user-action-btn primary">
+            <i class="bi bi-bookmark-star"></i> My Watchlist
+        </a>
+        <a href="{{url_for('auth.change_password')}}" class="user-action-btn primary">
+            <i class="bi bi-key"></i> Change Password
+        </a>
+        <a href="{{url_for('auth.logout')}}" class="user-action-btn danger">
+            <i class="bi bi-box-arrow-right"></i> Logout
+        </a>
+    </div>
+</div>
 {% endblock %}
 
 <!-- Scripts -->
 {% block js %}
-    <!-- <script src="{{url_for('static', filename='js/auth.js')}}"></script> -->
 {% endblock %}

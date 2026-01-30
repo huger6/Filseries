@@ -1,0 +1,349 @@
+/* Watchlist Page Styles */
+
+.watchlist-page {
+    padding: 40px;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* Header */
+.watchlist-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.watchlist-header h1 {
+    font-family: var(--titleFont);
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--secondaryColor);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 10px;
+}
+
+.watchlist-header h1 i {
+    color: var(--accentColor);
+}
+
+.watchlist-header p {
+    font-size: 1.1rem;
+    color: rgba(var(--secondaryColorRGB), 0.7);
+}
+
+/* Tabs */
+.watchlist-tabs {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 40px;
+}
+
+.tab-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 30px;
+    border-radius: 30px;
+    border: 2px solid rgba(var(--secondaryColorRGB), 0.2);
+    background: transparent;
+    color: rgba(var(--secondaryColorRGB), 0.8);
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.tab-btn:hover {
+    border-color: var(--accentColor);
+    color: var(--accentColor);
+}
+
+.tab-btn.active {
+    background: var(--accentColor);
+    border-color: var(--accentColor);
+    color: var(--primaryColor);
+}
+
+.tab-count {
+    background: rgba(var(--primaryColorRGB), 0.3);
+    padding: 2px 10px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.tab-btn.active .tab-count {
+    background: rgba(255, 255, 255, 0.25);
+}
+
+/* Tab Content */
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Watchlist Grid */
+.watchlist-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 25px;
+}
+
+/* Watchlist Card */
+.watchlist-card {
+    position: relative;
+    border-radius: 16px;
+    overflow: hidden;
+    background: rgba(var(--primaryColorRGB), 0.6);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+}
+
+.watchlist-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 40px rgba(var(--accentColorRGB), 0.2);
+}
+
+.card-link {
+    display: block;
+    text-decoration: none;
+}
+
+.card-poster {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 2/3;
+    background-color: rgba(var(--primaryColorRGB), 0.8);
+    transition: transform 0.3s ease;
+    overflow: hidden;
+}
+
+.card-poster .poster-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    transition: transform 0.3s ease;
+}
+
+.card-poster .poster-img.default-poster {
+    object-fit: contain;
+    background-color: rgba(var(--primaryColorRGB), 0.95);
+}
+
+.watchlist-card:hover .card-poster .poster-img {
+    transform: scale(1.03);
+}
+
+.watched-badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    background: var(--greenColor);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.1rem;
+    box-shadow: 0 4px 15px rgba(56, 217, 20, 0.4);
+}
+
+.card-content {
+    padding: 15px;
+    background: linear-gradient(to top, rgba(var(--primaryColorRGB), 1), rgba(var(--primaryColorRGB), 0.95));
+}
+
+.card-title {
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--secondaryColor);
+    margin-bottom: 8px;
+    line-height: 1.3;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.card-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.85rem;
+    color: rgba(var(--secondaryColorRGB), 0.7);
+}
+
+.media-type {
+    background: rgba(var(--accentColorRGB), 0.2);
+    color: var(--accentColor);
+    padding: 2px 10px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.user-rating {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.user-rating i {
+    color: #ffc107;
+}
+
+/* Card Actions */
+.card-actions {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.watchlist-card:hover .card-actions {
+    opacity: 1;
+}
+
+.card-actions .action-btn {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(var(--primaryColorRGB), 0.9);
+    color: var(--secondaryColor);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1rem;
+}
+
+.card-actions .action-btn:hover {
+    transform: scale(1.1);
+}
+
+.card-actions .action-btn.mark-watched:hover {
+    background: var(--greenColor);
+    color: white;
+}
+
+.card-actions .action-btn.edit-rating:hover {
+    background: #ffc107;
+    color: var(--primaryColor);
+}
+
+.card-actions .action-btn.remove-item:hover {
+    background: var(--redColor);
+    color: white;
+}
+
+/* Empty State */
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 80px 20px;
+    text-align: center;
+}
+
+.empty-state > i {
+    font-size: 5rem;
+    color: rgba(var(--accentColorRGB), 0.3);
+    margin-bottom: 20px;
+}
+
+.empty-state h3 {
+    font-size: 1.8rem;
+    color: var(--secondaryColor);
+    margin-bottom: 10px;
+}
+
+.empty-state p {
+    font-size: 1.1rem;
+    color: rgba(var(--secondaryColorRGB), 0.7);
+    margin-bottom: 30px;
+}
+
+.btn-explore {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 30px;
+    border-radius: 50px;
+    background: linear-gradient(135deg, var(--accentColor), var(--accentColorHover));
+    color: var(--primaryColor);
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.btn-explore:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 30px rgba(var(--accentColorRGB), 0.4);
+    color: var(--primaryColor);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .watchlist-page {
+        padding: 30px 20px;
+    }
+
+    .watchlist-header h1 {
+        font-size: 1.8rem;
+    }
+
+    .watchlist-tabs {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .tab-btn {
+        justify-content: center;
+    }
+
+    .watchlist-grid {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 15px;
+    }
+
+    .card-actions {
+        opacity: 1;
+    }
+}
+
+@media (max-width: 480px) {
+    .watchlist-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+
+    .card-content {
+        padding: 10px;
+    }
+
+    .card-title {
+        font-size: 0.9rem;
+    }
+}

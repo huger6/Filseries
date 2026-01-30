@@ -36,8 +36,8 @@ def validateRegister(username, name, pw, pw_confirm):
     username_exists = User.query.filter_by(username=username).first()
     if username_exists:
         raise RegisterError("This username already exists!")
+    
     # Need some rework here 
-    print(validateName(name))
     return validateName(name) and validateUsername(username) and validatePassword(pw) and validatePasswordConfirm(pw, pw_confirm)
 
 def validateLogin(username, pw):

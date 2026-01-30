@@ -1,19 +1,9 @@
 
 document.addEventListener("DOMContentLoaded", function () {
-    checkLoginOnHome();
     leftButtonsDrop();
-    navBarDropdowns();
-});  
-
-async function checkLogin() {
-    try {
-        const res = await fetch("/is_user_logged_in", { credentials: "same-origin" });
-        const data = await res.json();
-        return { loggedIn: data.loggedIn, username: data.username || null };
-    } catch {
-        return { loggedIn: false, username: null };
-    }
-}
+    initSearchOverlay();
+    initNotificationDropdown();
+});
 
 function leftButtonsDrop() {
     const dropdowns = document.querySelectorAll(".dropdown-watch");
@@ -27,7 +17,7 @@ function leftButtonsDrop() {
             dropdown.classList.toggle("open");
         });
     });
-    //Fechar dropdowns ao clicar fora
+    // Fechar dropdowns ao clicar fora
     document.addEventListener("click", function (event) {
         dropdowns.forEach((dropdown) => {
             if (dropdown.contains(event.target)) {
@@ -38,73 +28,107 @@ function leftButtonsDrop() {
     });
 }
 
-function navBarDropdowns() {
-    const notificationButton = document.getElementById("notifications");
-    const userButton = document.getElementById("user");
-    
-    const notificationSymbol = notificationButton.querySelector(".notifications-symbol");
-    const userSymbol = userButton.querySelector(".user-symbol");
-    
-    const notificationDropdown = notificationButton.querySelector(".notifications-dropdown");
-    const userDropdown = userButton.querySelector(".user-dropdown");
-    
-    document.addEventListener("click", function (event) {
-        let clickedInside = false;
-        
-        //Open notifications
-        if (notificationButton.contains(event.target)) {
-            clickedInside = true;
-            notificationDropdown.classList.toggle("open");
-            notificationSymbol.classList.toggle("open");
-            userDropdown.classList.remove("open");
-            userSymbol.classList.remove("open");
+function initSearchOverlay() {
+    const searchToggleBtn = document.querySelector('.search-toggle-btn');
+    const searchOverlay = document.querySelector('.search-overlay');
+    const searchOverlayClose = document.querySelector('.search-overlay-close');
+    const searchOverlayInput = document.querySelector('.search-overlay-input');
+
+    if (!searchToggleBtn || !searchOverlay) return;
+
+    // Open search overlay
+    searchToggleBtn.addEventListener('click', function() {
+        searchOverlay.classList.add('active');
+        setTimeout(() => {
+            searchOverlayInput.focus();
+        }, 100);
+    });
+
+    // Close search overlay
+    if (searchOverlayClose) {
+        searchOverlayClose.addEventListener('click', function() {
+            searchOverlay.classList.remove('active');
+        });
+    }
+
+    // Close on Escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && searchOverlay.classList.contains('active')) {
+            searchOverlay.classList.remove('active');
         }
-        //Open user
-        if (userButton.contains(event.target)) {
-            clickedInside = true;
-            if (sessionStorage.getItem("USER_IS_LOGGED") === "true") {
-                userDropdown.classList.toggle("open");
-                userSymbol.classList.toggle("open");
-                notificationDropdown.classList.remove("open");
-                notificationSymbol.classList.remove("open");
+    });
+
+    // Submit on Enter
+    if (searchOverlayInput) {
+        searchOverlayInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                this.closest('form').submit();
             }
-            else {
-                window.location.replace(loginUrl);
-            }
+        });
+    }
+}
+
+function initNotificationDropdown() {
+    const notificationBtn = document.querySelector('.notification-btn');
+    const notificationDropdown = document.querySelector('.notification-dropdown');
+    const notificationTabs = document.querySelectorAll('.notification-tab');
+
+    if (!notificationBtn || !notificationDropdown) return;
+
+    // Toggle dropdown on button click
+    notificationBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        notificationDropdown.classList.toggle('open');
+    });
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function(e) {
+        if (!notificationDropdown.contains(e.target) && !notificationBtn.contains(e.target)) {
+            notificationDropdown.classList.remove('open');
         }
-        
-        //Fechar todos os dropdowns antes de abrir outro
-        if (!clickedInside) {
-            notificationDropdown.classList.remove("open");
-            notificationSymbol.classList.remove("open");
-            userDropdown.classList.remove("open");
-            userSymbol.classList.remove("open");
+    });
+
+    // Close on Escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && notificationDropdown.classList.contains('open')) {
+            notificationDropdown.classList.remove('open');
         }
+    });
+
+    // Tab switching
+    notificationTabs.forEach(tab => {
+        tab.addEventListener('click', function() {
+            notificationTabs.forEach(t => t.classList.remove('active'));
+            this.classList.add('active');
+            
+            const filter = this.dataset.filter;
+            filterNotifications(filter);
+        });
     });
 }
 
-
-function checkLoginOnHome() {
-    async function runCheck() {
-        const user = await checkLogin();
-        
-        if (user.loggedIn === true) {
-            sessionStorage.setItem("USER_IS_LOGGED", "true");
-            sessionStorage.setItem("user-id", user.username);
-        }
-        else {
-            sessionStorage.setItem("USER_IS_LOGGED", "false");
-            sessionStorage.setItem("user-id", null);
-        }
-    }
+function filterNotifications(filter) {
+    const notificationItems = document.querySelectorAll('.notification-item');
+    const emptyState = document.querySelector('.notification-empty');
     
-    if (window.location.pathname === homeUrl) {
-        if (document.readyState === "loading") {
-            document.addEventListener("DOMContentLoaded", runCheck);
+    let visibleCount = 0;
+    
+    notificationItems.forEach(item => {
+        if (filter === 'all') {
+            item.style.display = 'flex';
+            visibleCount++;
+        } else if (filter === 'new' && item.classList.contains('unread')) {
+            item.style.display = 'flex';
+            visibleCount++;
+        } else {
+            item.style.display = 'none';
         }
-        else {
-            runCheck();
-        }
+    });
+    
+    // Show empty state if no notifications visible
+    if (emptyState) {
+        emptyState.style.display = visibleCount === 0 ? 'flex' : 'none';
     }
 }
 

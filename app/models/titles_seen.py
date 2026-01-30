@@ -1,26 +1,34 @@
-from sqlalchemy import Integer, Float, DateTime, String, ForeignKey
+from sqlalchemy import Integer, Float, DateTime, ForeignKey, Enum, CheckConstraint
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.extensions import db
 
+# Series progress status types
+SERIES_STATUS_TYPES = ("New Season Available", "Seen", "Watching")
+
+
 class UserMoviesSeen(db.Model):
     __tablename__ = "user_movies_seen"
+    __table_args__ = (
+        CheckConstraint("user_rating >= 0.0 AND user_rating <= 10.0", name="check_movie_rating_range"),
+    )
 
-    user_id : Mapped[int] = mapped_column(Integer, ForeignKey("users.id", ondelete="CASCADE"), primary_key=True)
-    movie_id : Mapped[int] = mapped_column(Integer, primary_key=True)
-    date : Mapped[DateTime | None] = mapped_column(DateTime, nullable=True)
-    obs : Mapped[String | None] = mapped_column(String(255), nullable=True)
-    rating : Mapped[Float | None] = mapped_column(Float, nullable=True)
+    user_id: Mapped[int] = mapped_column(Integer, ForeignKey("users.id", ondelete="CASCADE"), primary_key=True)
+    api_movie_id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    user_rating: Mapped[float | None] = mapped_column(Float, nullable=True)
+    updated_at: Mapped[DateTime | None] = mapped_column(DateTime, nullable=True)
 
-class UserSeriesSeen(db.Model):
-    __tablename__ = "user_series_seen"
 
-    user_id : Mapped[int] = mapped_column(Integer, ForeignKey("users.id", ondelete="CASCADE"), primary_key=True)
-    serie_id : Mapped[int] = mapped_column(Integer, primary_key=True)
-    date : Mapped[DateTime | None] = mapped_column(DateTime, nullable=True)
-    obs : Mapped[String | None] = mapped_column(String(255), nullable=True)
-    rating : Mapped[Float | None] = mapped_column(Float, nullable=True)
+class UserSeriesProgress(db.Model):
+    __tablename__ = "user_series_progress"
+    __table_args__ = (
+        CheckConstraint("user_rating >= 0.0 AND user_rating <= 10.0", name="check_series_rating_range"),
+    )
 
-# If using titles tables, add:
-# ForeignKey("series.serie_id", ondelete="CASCADE")
+    user_id: Mapped[int] = mapped_column(Integer, ForeignKey("users.id", ondelete="CASCADE"), primary_key=True)
+    api_serie_id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    last_season_seen: Mapped[int | None] = mapped_column(Integer, default=1, nullable=True)
+    status: Mapped[str | None] = mapped_column(Enum(*SERIES_STATUS_TYPES, name="series_status"), nullable=True)
+    user_rating: Mapped[float | None] = mapped_column(Float, nullable=True)
+    updated_at: Mapped[DateTime | None] = mapped_column(DateTime, nullable=True)
 

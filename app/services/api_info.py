@@ -4,6 +4,70 @@ from config import Config
 api_key = Config.API_KEY
 
 
+async def get_trending_titles(session, media_type: str = "all", time_window: str = "week"):
+    """Get trending titles from TMDB API.
+    
+    Args:
+        session: aiohttp session
+        media_type: 'all', 'movie', or 'tv'
+        time_window: 'day' or 'week'
+    """
+    url = f"https://api.themoviedb.org/3/trending/{media_type}/{time_window}"
+    params = {"api_key": api_key}
+    
+    async with session.get(url, params=params) as resp:
+        if resp.status != 200:
+            return None
+        
+        data = await resp.json()
+        if not data.get("results"):
+            return None
+    
+    return data["results"]
+
+
+async def get_popular_titles(session, media_type: str = "movie"):
+    """Get popular titles from TMDB API.
+    
+    Args:
+        session: aiohttp session
+        media_type: 'movie' or 'tv'
+    """
+    url = f"https://api.themoviedb.org/3/{media_type}/popular"
+    params = {"api_key": api_key}
+    
+    async with session.get(url, params=params) as resp:
+        if resp.status != 200:
+            return None
+        
+        data = await resp.json()
+        if not data.get("results"):
+            return None
+    
+    return data["results"]
+
+
+async def get_top_rated_titles(session, media_type: str = "movie"):
+    """Get top rated titles from TMDB API.
+    
+    Args:
+        session: aiohttp session
+        media_type: 'movie' or 'tv'
+    """
+    url = f"https://api.themoviedb.org/3/{media_type}/top_rated"
+    params = {"api_key": api_key}
+    
+    async with session.get(url, params=params) as resp:
+        if resp.status != 200:
+            return None
+        
+        data = await resp.json()
+        if not data.get("results"):
+            return None
+    
+    return data["results"]
+
+
 async def search_title_on_api(session, query: str, title_type: str = None):
     """Search title in api. Only returns data["results"]"""
     base = "https://api.themoviedb.org/3"
@@ -46,11 +110,10 @@ async def get_title_info_on_api(session, tmdb_id, search_type):
         if resp.status != 200:
             return None
 
-        data = await resp.json()
-        if not data["results"]:
-            return None
+        data = await resp.json() # Returns a dict
         
-        return data["results"]
+        return data if data else None
+
 
 def __check_api_key():
     print(f"API KEY: {api_key}")

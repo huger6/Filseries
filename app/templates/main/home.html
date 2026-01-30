@@ -1,5 +1,229 @@
 {% extends "base.html" %}
 
+{% block title %}
+- Home
+{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/home.css')}}">
+{% endblock %}
+
+{% block head_scripts %}
+{% endblock %}
+
 {% block main %}
-    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolor corrupti amet nulla impedit animi quidem, sit odit esse omnis, harum earum! Officiis omnis rem quidem, possimus distinctio eius repellat odit?</p>
+<div class="home-container">
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="hero-content">
+            <h1 class="hero-title">Track Your Entertainment</h1>
+            <p class="hero-subtitle">Keep a record of movies and series you've watched. Build your personal watchlist and never forget what to watch next.</p>
+            <div class="hero-actions">
+                <a href="{{url_for('titles.search')}}" class="btn-primary">
+                    <i class="fas fa-search"></i> Explore Titles
+                </a>
+                {% if current_user.is_authenticated %}
+                <a href="{{url_for('watchlist.watchlist')}}" class="btn-secondary">
+                    <i class="bi bi-bookmark-star"></i> My Watchlist
+                </a>
+                {% else %}
+                <a href="{{url_for('auth.register')}}" class="btn-secondary">
+                    <i class="bi bi-person-plus"></i> Get Started
+                </a>
+                {% endif %}
+            </div>
+        </div>
+        <div class="hero-backdrop" id="hero-backdrop"></div>
+    </section>
+
+    <!-- Trending Section -->
+    {% if trending %}
+    <section class="content-section">
+        <div class="section-header">
+            <h2 class="section-title"><i class="bi bi-fire"></i> Trending This Week</h2>
+            <div class="slider-controls">
+                <button class="slider-btn prev-btn" data-slider="trending"><i class="bi bi-chevron-left"></i></button>
+                <button class="slider-btn next-btn" data-slider="trending"><i class="bi bi-chevron-right"></i></button>
+            </div>
+        </div>
+        <div class="slider-wrapper">
+            <button class="scroll-indicator scroll-left" aria-label="Scroll left"><i class="bi bi-chevron-left"></i></button>
+            <div class="slider" id="trending-slider" data-results='{{ trending | tojson | safe }}'>
+                {% for item in trending %}
+                <a href="{{url_for('titles.title', media_type=item.media_type, id=item.id)}}" class="slider-card" data-id="{{ item.id }}">
+                    <div class="card-poster">
+                        <img src="{{ 'https://image.tmdb.org/t/p/w500' ~ item.poster_path if item.poster_path else url_for('static', filename='img/defaultPoster.svg') }}" alt="{{ item.title }}" loading="lazy" class="poster-img{% if not item.poster_path %} default-poster{% endif %}">
+                    </div>
+                    <div class="card-overlay">
+                        <span class="card-type">{{ 'Movie' if item.media_type == 'movie' else 'Serie' }}</span>
+                    </div>
+                    <div class="card-info">
+                        <h4 class="card-title">{{ item.title }}</h4>
+                        <div class="card-meta">
+                            <span class="card-year">{{ item.release_date or 'N/A' }}</span>
+                            <span class="card-rating"><i class="bi bi-star-fill"></i> {{ "%.1f"|format(item.vote_average) if item.vote_average else 'N/A' }}</span>
+                        </div>
+                    </div>
+                </a>
+                {% endfor %}
+            </div>
+            <button class="scroll-indicator scroll-right" aria-label="Scroll right"><i class="bi bi-chevron-right"></i></button>
+        </div>
+        <div class="scroll-hint"><i class="bi bi-arrow-left-right"></i> Swipe to see more</div>
+    </section>
+    {% endif %}
+
+    <!-- Popular Movies Section -->
+    {% if popular_movies %}
+    <section class="content-section">
+        <div class="section-header">
+            <h2 class="section-title"><i class="bi bi-film"></i> Popular Movies</h2>
+            <div class="slider-controls">
+                <button class="slider-btn prev-btn" data-slider="popular-movies"><i class="bi bi-chevron-left"></i></button>
+                <button class="slider-btn next-btn" data-slider="popular-movies"><i class="bi bi-chevron-right"></i></button>
+            </div>
+        </div>
+        <div class="slider-wrapper">
+            <button class="scroll-indicator scroll-left" aria-label="Scroll left"><i class="bi bi-chevron-left"></i></button>
+            <div class="slider" id="popular-movies-slider" data-results='{{ popular_movies | tojson | safe }}'>
+                {% for item in popular_movies %}
+                <a href="{{url_for('titles.title', media_type='movie', id=item.id)}}" class="slider-card" data-id="{{ item.id }}">
+                    <div class="card-poster">
+                        <img src="{{ 'https://image.tmdb.org/t/p/w500' ~ item.poster_path if item.poster_path else url_for('static', filename='img/defaultPoster.svg') }}" alt="{{ item.title }}" loading="lazy" class="poster-img{% if not item.poster_path %} default-poster{% endif %}">
+                    </div>
+                    <div class="card-info">
+                        <h4 class="card-title">{{ item.title }}</h4>
+                        <div class="card-meta">
+                            <span class="card-year">{{ item.release_date or 'N/A' }}</span>
+                            <span class="card-rating"><i class="bi bi-star-fill"></i> {{ "%.1f"|format(item.vote_average) if item.vote_average else 'N/A' }}</span>
+                        </div>
+                    </div>
+                </a>
+                {% endfor %}
+            </div>
+            <button class="scroll-indicator scroll-right" aria-label="Scroll right"><i class="bi bi-chevron-right"></i></button>
+        </div>
+        <div class="scroll-hint"><i class="bi bi-arrow-left-right"></i> Swipe to see more</div>
+    </section>
+    {% endif %}
+
+    <!-- Popular TV Shows Section -->
+    {% if popular_tv %}
+    <section class="content-section">
+        <div class="section-header">
+            <h2 class="section-title"><i class="bi bi-tv"></i> Popular TV Shows</h2>
+            <div class="slider-controls">
+                <button class="slider-btn prev-btn" data-slider="popular-tv"><i class="bi bi-chevron-left"></i></button>
+                <button class="slider-btn next-btn" data-slider="popular-tv"><i class="bi bi-chevron-right"></i></button>
+            </div>
+        </div>
+        <div class="slider-wrapper">
+            <button class="scroll-indicator scroll-left" aria-label="Scroll left"><i class="bi bi-chevron-left"></i></button>
+            <div class="slider" id="popular-tv-slider" data-results='{{ popular_tv | tojson | safe }}'>
+                {% for item in popular_tv %}
+                <a href="{{url_for('titles.title', media_type='tv', id=item.id)}}" class="slider-card" data-id="{{ item.id }}">
+                    <div class="card-poster">
+                        <img src="{{ 'https://image.tmdb.org/t/p/w500' ~ item.poster_path if item.poster_path else url_for('static', filename='img/defaultPoster.svg') }}" alt="{{ item.title }}" loading="lazy" class="poster-img{% if not item.poster_path %} default-poster{% endif %}">
+                    </div>
+                    <div class="card-info">
+                        <h4 class="card-title">{{ item.title }}</h4>
+                        <div class="card-meta">
+                            <span class="card-year">{{ item.release_date or 'N/A' }}</span>
+                            <span class="card-rating"><i class="bi bi-star-fill"></i> {{ "%.1f"|format(item.vote_average) if item.vote_average else 'N/A' }}</span>
+                        </div>
+                    </div>
+                </a>
+                {% endfor %}
+            </div>
+            <button class="scroll-indicator scroll-right" aria-label="Scroll right"><i class="bi bi-chevron-right"></i></button>
+        </div>
+        <div class="scroll-hint"><i class="bi bi-arrow-left-right"></i> Swipe to see more</div>
+    </section>
+    {% endif %}
+
+    <!-- Top Rated Movies Section -->
+    {% if top_rated_movies %}
+    <section class="content-section">
+        <div class="section-header">
+            <h2 class="section-title"><i class="bi bi-trophy"></i> Top Rated Movies</h2>
+            <div class="slider-controls">
+                <button class="slider-btn prev-btn" data-slider="top-movies"><i class="bi bi-chevron-left"></i></button>
+                <button class="slider-btn next-btn" data-slider="top-movies"><i class="bi bi-chevron-right"></i></button>
+            </div>
+        </div>
+        <div class="slider-wrapper">
+            <button class="scroll-indicator scroll-left" aria-label="Scroll left"><i class="bi bi-chevron-left"></i></button>
+            <div class="slider" id="top-movies-slider" data-results='{{ top_rated_movies | tojson | safe }}'>
+                {% for item in top_rated_movies %}
+                <a href="{{url_for('titles.title', media_type='movie', id=item.id)}}" class="slider-card" data-id="{{ item.id }}">
+                    <div class="card-poster">
+                        <img src="{{ 'https://image.tmdb.org/t/p/w500' ~ item.poster_path if item.poster_path else url_for('static', filename='img/defaultPoster.svg') }}" alt="{{ item.title }}" loading="lazy" class="poster-img{% if not item.poster_path %} default-poster{% endif %}">
+                    </div>
+                    <div class="card-info">
+                        <h4 class="card-title">{{ item.title }}</h4>
+                        <div class="card-meta">
+                            <span class="card-year">{{ item.release_date or 'N/A' }}</span>
+                            <span class="card-rating"><i class="bi bi-star-fill"></i> {{ "%.1f"|format(item.vote_average) if item.vote_average else 'N/A' }}</span>
+                        </div>
+                    </div>
+                </a>
+                {% endfor %}
+            </div>
+            <button class="scroll-indicator scroll-right" aria-label="Scroll right"><i class="bi bi-chevron-right"></i></button>
+        </div>
+        <div class="scroll-hint"><i class="bi bi-arrow-left-right"></i> Swipe to see more</div>
+    </section>
+    {% endif %}
+
+    <!-- Top Rated TV Shows Section -->
+    {% if top_rated_tv %}
+    <section class="content-section">
+        <div class="section-header">
+            <h2 class="section-title"><i class="bi bi-star"></i> Top Rated TV Shows</h2>
+            <div class="slider-controls">
+                <button class="slider-btn prev-btn" data-slider="top-tv"><i class="bi bi-chevron-left"></i></button>
+                <button class="slider-btn next-btn" data-slider="top-tv"><i class="bi bi-chevron-right"></i></button>
+            </div>
+        </div>
+        <div class="slider-wrapper">
+            <button class="scroll-indicator scroll-left" aria-label="Scroll left"><i class="bi bi-chevron-left"></i></button>
+            <div class="slider" id="top-tv-slider" data-results='{{ top_rated_tv | tojson | safe }}'>
+                {% for item in top_rated_tv %}
+                <a href="{{url_for('titles.title', media_type='tv', id=item.id)}}" class="slider-card" data-id="{{ item.id }}">
+                    <div class="card-poster">
+                        <img src="{{ 'https://image.tmdb.org/t/p/w500' ~ item.poster_path if item.poster_path else url_for('static', filename='img/defaultPoster.svg') }}" alt="{{ item.title }}" loading="lazy" class="poster-img{% if not item.poster_path %} default-poster{% endif %}">
+                    </div>
+                    <div class="card-info">
+                        <h4 class="card-title">{{ item.title }}</h4>
+                        <div class="card-meta">
+                            <span class="card-year">{{ item.release_date or 'N/A' }}</span>
+                            <span class="card-rating"><i class="bi bi-star-fill"></i> {{ "%.1f"|format(item.vote_average) if item.vote_average else 'N/A' }}</span>
+                        </div>
+                    </div>
+                </a>
+                {% endfor %}
+            </div>
+            <button class="scroll-indicator scroll-right" aria-label="Scroll right"><i class="bi bi-chevron-right"></i></button>
+        </div>
+        <div class="scroll-hint"><i class="bi bi-arrow-left-right"></i> Swipe to see more</div>
+    </section>
+    {% endif %}
+
+    <!-- Call to Action Section -->
+    <section class="cta-section">
+        <div class="cta-content">
+            <h2>Start Tracking Your Watch History</h2>
+            <p>Never forget what you've watched. Create your personalized collection today.</p>
+            {% if not current_user.is_authenticated %}
+            <a href="{{url_for('auth.register')}}" class="btn-primary btn-lg">
+                <i class="bi bi-person-plus"></i> Create Free Account
+            </a>
+            {% endif %}
+        </div>
+    </section>
+</div>
+{% endblock %}
+
+{% block js %}
+<script src="{{url_for('static', filename='js/home.js')}}"></script>
 {% endblock %}

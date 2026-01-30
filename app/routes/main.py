@@ -1,11 +1,15 @@
 from flask import Blueprint, render_template, flash
 from flask_login import current_user
+import asyncio
+from app.services.search_info import get_home_page_data
 
 main_bp = Blueprint("main", __name__, template_folder="../templates/main")
 
 @main_bp.route("/")
 def home():
-    return render_template("home.html", page="home")
+    # Get home page data (trending, popular, top rated)
+    home_data = asyncio.run(get_home_page_data())
+    return render_template("home.html", page="home", **home_data)
 
 @main_bp.route("/about")
 def about():

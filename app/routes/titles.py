@@ -8,7 +8,7 @@ from app.constants import GENRES_DEFAULT
 from app.validations import validate_title, validate_page, validate_limit_per_page
 from app.validations import validate_sort_by, validate_genres, validate_years, validate_ratings
 # API
-from app.services.search_info import search_title
+from app.services.search_info import search_title, get_title_info
 
 titles_bp = Blueprint("titles", __name__, template_folder="../templates/titles")
 
@@ -56,20 +56,21 @@ def search():
             flash(str(e), 'error')
             return render_template("search.html", page="search")
 
+        # Get user ID
         user_id = current_user.get_id() if current_user.is_authenticated else None
+        # Get results
         data = asyncio.run(search_title(query=title, search_type=titleType, user_id=user_id))
-        print(data)
+
         return render_template("search.html", results=data, query=title, page="search")
     
-@titles_bp.route("/title/<string:media_type>/<int:id>", methods=["GET"])
+@titles_bp.route("/title/<media:media_type>/<int:id>", methods=["GET"])
 def title(media_type, id):
     if request.method == "GET":
-        return render_template("title.html", title="Title not found", results=None)
-
+        # Get user ID
         user_id = current_user.get_id() if current_user.is_authenticated else None
-        # results = getTitleInformationDetailed(tconst, user_id)
-        # print(f"{results}!")
-        # if results:
-        #     return render_template("title.html", title=results[0]["primaryTitle"], results=results)
-    return render_template("title.html", title="Title not found", results=None)
+        # Get results
+        data = asyncio.run(get_title_info(id=id, search_type=media_type, user_id=user_id))
+        if data:
+            return render_template("title.html", primaryTitle=data["title"], results=data)
+    return render_template("title.html", primaryTitle="Title not found", results=None)
     

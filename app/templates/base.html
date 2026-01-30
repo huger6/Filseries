@@ -7,7 +7,7 @@
     <title>Filseries{% block title %}{% endblock %}</title>
 
     <!-- Meta tags -->
-    <meta name="description" content="">
+    <meta name="description" content="Track your movies and TV shows. Keep a record of what you've watched and build your personal watchlist.">
     <meta name="author" content="huger6">
     <meta name="robots" content="follow">
     <meta name="copyright" content="© 2025 huger6">
@@ -38,104 +38,210 @@
     </script>
     {% block head_scripts %}{% endblock %}
 </head>
-<body class="d-flex flex-column h-100">
-    <header class="flex-shrink-0">
+<body>
+    <header>
         <nav class="navbar navbar-expand-md fixed-top">
-            <div class="container-fluid d-flex align-items-center px-0 px-lg-2 px-xl-5 flex-grow-1 gap-2 gap-md-4 gap-xl-5">
+            <div class="container-fluid d-flex align-items-center px-3 px-lg-4 px-xl-5 flex-grow-1 gap-3 gap-md-4 gap-xl-5">
                 <!-- Brand -->
-                <a class="navbar-brand ms-sm-4 ms-lg-5" href="{{url_for('main.home')}}">
-                    <img src="{{url_for('static', filename='img/logo/logo.jpeg')}}" alt="Filseries Logo" loading="eager" style="width: 75px; height: 75px;">
+                <a class="navbar-brand d-flex align-items-center" href="{{url_for('main.home')}}">
+                    <img src="{{url_for('static', filename='img/logo/logo.jpeg')}}" alt="Filseries Logo" loading="eager" class="brand-logo">
                 </a>
                 <!-- Search bar -->
                 <div class="search-container flex-grow-1">
-                    <form method="get" action="{{url_for('titles.search')}}">
-                        <input class="form-control search-input" type="text" name="title"  placeholder="Search a title">
-                        <button type="submit" class="search-icon"><i class="fas fa-search"></i></button>
+                    <button type="button" class="search-toggle-btn" aria-label="Open search">
+                        <i class="fas fa-search"></i>
+                    </button>
+                    <form method="get" action="{{url_for('titles.search')}}" class="search-form">
+                        <i class="fas fa-search search-icon"></i>
+                        <input class="form-control search-input" type="text" name="title" placeholder="Search movies & TV shows...">
+                        <button type="submit" class="search-btn"><i class="fas fa-arrow-right"></i></button>
                     </form>
                 </div>
-                <div class="d-flex align-items-center gap-sm-2 gap-xl-3 gap-xxl-4 ms-3">
-                    <!-- Hamburger button -->
-                    <button class="navbar-toggler pe-4 custom-navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Alterar modod de navegação">
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                    </button>
-                    <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
-                        <div class="offcanvas-header m-2 text-center justify-content-start gap-3" style="position: relative;">
-                            <a href="{{url_for('main.home')}}" style="text-decoration: none;"><img class="user-select-false" src="{{url_for('static', filename='img/logo/logo.jpeg')}}" alt="Filseries Logo" loading="lazy" style="width: 60px; height: 60px;"></a>
-                            <a href="{{url_for('main.home')}}" style="text-decoration: none; margin-left: 5px !important;"><h3 class="user-select-false m-0 p-0" style="color: var(--accentColor); padding-top: 8px !important;" id="brand-name-offcanvas">Filseries</h3></a>
-                            <button type="button" class="close-button-hamburger-menu me-4" style="padding-top: 8px !important;" data-bs-dismiss="offcanvas" aria-label="Close"><i class="bi bi-x-lg"></i></button>
-                        </div>
-                        <div class="offcanvas-body pe-2 pe-xl-4 ms-3 ms-md-0">
-                            <ul class="navbar-nav justify-content-end flex-grow-1">
-                                <li class="nav-item">
-                                    <a class="nav-link mx-xl-1 navbar-option user-select-false hover-underline {% if page == 'home' %}nav-link-active{% endif %}" href="{{url_for('main.home')}}">Home</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link mx-xl-1 navbar-option user-select-false hover-underline {% if page == 'watchlist' %}nav-link-active{% endif %}" href="{{url_for('watchlist.watchlist')}}">Watchlist</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link mx-xl-1 navbar-option user-select-false hover-underline {% if page == 'about' %}nav-link-active{% endif %}" href="{{url_for('main.about')}}">About</a>
-                                </li>
-                                {% if current_user.is_authenticated %}
-                                <li class="nav-item">
-                                    <a class="nav-link mx-xl-1 navbar-option user-select-false {% if page == 'user' %}nav-link-active{% endif %}" href="{{url_for('auth.user')}}">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-person-fill" viewBox="0 0 16 16">
-                                            <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6"/>
-                                        </svg>
-                                    </a>
-                                </li>
-                                {% else %}
-                                <li class="nav-item ms-2">
-                                    <a class="nav-link mx-xl-1 navbar-option user-select-false {% if page == 'login' %}nav-link-active{% endif %}" href="{{url_for('auth.login')}}" id="login-navbar">Login</a>
-                                </li>
-                                {% endif %}
-                            </ul>
+                <!-- Search overlay for small screens -->
+                <div class="search-overlay">
+                    <form method="get" action="{{url_for('titles.search')}}" class="search-overlay-form">
+                        <i class="fas fa-search search-overlay-icon"></i>
+                        <input class="form-control search-overlay-input" type="text" name="title" placeholder="Search..." autocomplete="off">
+                        <button type="button" class="search-overlay-close" aria-label="Close search">
+                            <i class="bi bi-x-lg"></i>
+                        </button>
+                    </form>
+                </div>
+                <div class="d-flex align-items-center gap-2 gap-xl-3">
+                    <!-- Desktop Navigation -->
+                    <ul class="navbar-nav d-none d-md-flex flex-row align-items-center gap-1 gap-xl-2">
+                        <li class="nav-item">
+                            <a class="nav-link {% if page == 'home' %}nav-link-active{% endif %}" href="{{url_for('main.home')}}">
+                                <span>Home</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if page == 'watchlist' %}nav-link-active{% endif %}" href="{{url_for('watchlist.watchlist')}}">
+                                <span>Watchlist</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if page == 'watched' %}nav-link-active{% endif %}" href="{{url_for('watched.watched')}}">
+                                <span>Watched</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if page == 'about' %}nav-link-active{% endif %}" href="{{url_for('main.about')}}">
+                                <span>About</span>
+                            </a>
+                        </li>
+                    </ul>
+                    <!-- User Area -->
+                    {% if current_user.is_authenticated %}
+                    <div class="notification-wrapper">
+                        <button class="notification-btn" type="button" title="Notifications" aria-label="Toggle notifications">
+                            <i class="bi bi-bell"></i>
+                            <span class="notification-badge d-none"></span>
+                        </button>
+                        <div class="notification-dropdown">
+                            <div class="notification-header">
+                                <h6>Notifications</h6>
+                                <div class="notification-tabs">
+                                    <button class="notification-tab active" data-filter="new">New</button>
+                                    <button class="notification-tab" data-filter="all">All</button>
+                                </div>
+                            </div>
+                            <div class="notification-list">
+                                <div class="notification-empty">
+                                    <i class="bi bi-bell-slash"></i>
+                                    <p>No notifications recently</p>
+                                </div>
+                                <!-- Notifications will be dynamically inserted here -->
+                            </div>
                         </div>
                     </div>
+                    <a class="user-btn" href="{{url_for('auth.user')}}" title="My Account">
+                        <i class="bi bi-person-circle"></i>
+                    </a>
+                    {% else %}
+                    <a class="login-btn d-none d-md-flex" href="{{url_for('auth.login')}}">
+                        <span>Login</span>
+                    </a>
+                    {% endif %}
+                    <!-- Hamburger button -->
+                    <button class="navbar-toggler d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
+                        <span class="toggler-icon toggler-icon-top"></span>
+                        <span class="toggler-icon toggler-icon-middle"></span>
+                        <span class="toggler-icon toggler-icon-bottom"></span>
+                    </button>
                 </div>
             </div>
         </nav>
+        <!-- Mobile Menu (moved outside container-fluid for proper behavior) -->
+        <div class="offcanvas offcanvas-end d-md-none" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
+            <div class="offcanvas-header d-flex justify-content-between">
+                <a href="{{url_for('main.home')}}" class="offcanvas-brand">
+                    <img src="{{url_for('static', filename='img/logo/logo.jpeg')}}" alt="Filseries Logo" loading="lazy">
+                    <span>Filseries</span>
+                </a>
+                <button type="button" class="close-btn" data-bs-dismiss="offcanvas" aria-label="Close">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </div>
+            <div class="offcanvas-body">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link {% if page == 'home' %}nav-link-active{% endif %}" href="{{url_for('main.home')}}">
+                            Home
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if page == 'watchlist' %}nav-link-active{% endif %}" href="{{url_for('watchlist.watchlist')}}">
+                            Watchlist
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if page == 'watched' %}nav-link-active{% endif %}" href="{{url_for('watched.watched')}}">
+                            Watched
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if page == 'about' %}nav-link-active{% endif %}" href="{{url_for('main.about')}}">
+                            About
+                        </a>
+                    </li>
+                    {% if current_user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            Notifications
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if page == 'user' %}nav-link-active{% endif %}" href="{{url_for('auth.user')}}">
+                            My Account
+                        </a>
+                    </li>
+                    {% else %}
+                    <li class="nav-item mt-3">
+                        <a class="mobile-login-btn" href="{{url_for('auth.login')}}">
+                            Login
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="mobile-register-btn" href="{{url_for('auth.register')}}">
+                            Register
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
     </header>
-    <main class="pt-4 m-0">
+    <main>
         <!-- Alerts -->
         {% with alerts = get_flashed_messages(with_categories=True) %}
             {% if alerts %}
-                {% for category, alert in alerts %}
-                    <div class="alert alert-{{ category }} alert-dismissable fade show" role="alert">
-                        {{ alert }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                {% endfor %}
+                <div class="alerts-container">
+                    {% for category, alert in alerts %}
+                        <div class="alert alert-{{ category }} alert-dismissable fade show" role="alert">
+                            <i class="bi {% if category == 'error' %}bi-exclamation-circle{% elif category == 'success' %}bi-check-circle{% else %}bi-info-circle{% endif %}"></i>
+                            {{ alert }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                </div>
             {% endif %}
         {% endwith %}
         <!-- Content -->
         {% block main %}{% endblock %}
     </main>
-    <footer class="container-fluid p-2 mt-auto">
-        <div class="d-flex justify-content-center align-items-center">
-            <div class="d-flex flex-column flex-md-row align-items-start flex-nowrap gap-4 gap-xl-5 g-0">
-                <!-- Company -->
-                <div class="d-flex align-items-center flex-column flex-md-row flex-nowrap gap-2 gap-lg-4 gap-xl-5 p-0 g-0">
-                    <!-- Logo -->
-                    <div class="d-flex flex-row align-items-center gap-2 gap-md-3 p-2">
-                        <a href="{{url_for('main.home')}}"><img src="../static/img/logo/logo.jpeg" alt="Filseries Logo" loading="lazy" style="width: 50px; height: 50px;"></a>
-                        <div class="small m-0 p-0">Copyright &copy; Filseries 2025</div>
+    <footer>
+        <div class="footer-content">
+            <div class="footer-main">
+                <div class="footer-brand">
+                    <a href="{{url_for('main.home')}}" class="footer-logo">
+                        <img src="{{url_for('static', filename='img/logo/logo.jpeg')}}" alt="Filseries Logo">
+                        <span>Filseries</span>
+                    </a>
+                    <p class="footer-tagline">Track your entertainment journey</p>
+                </div>
+                <div class="footer-links">
+                    <div class="footer-column">
+                        <h5>Navigation</h5>
+                        <a href="{{url_for('main.home')}}">Home</a>
+                        <a href="{{url_for('watchlist.watchlist')}}">Watchlist</a>
+                        <a href="{{url_for('watched.watched')}}">Watched</a>
+                        <a href="{{url_for('main.about')}}">About</a>
                     </div>
-                    <div class="d-flex flex-row flex-wrap flex-md-nowrap justify-content-center gap-3 gap-md-4 gap-xl-5">
-                        <div class="footer-column">
-                            <a class="small" href="{{url_for('main.privacy')}}">Privacy Policy</a>
-                        </div>
+                    <div class="footer-column">
+                        <h5>Legal</h5>
+                        <a href="{{url_for('main.privacy')}}">Privacy Policy</a>
                     </div>
                 </div>
-                <!-- Licensing -->
-                <div class="d-flex flex-column align-self-center p-0">
-                    <div class="small">made by <a href="https://github.com/huger6" target="_blank">huger6</a></div>
-                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>Copyright &copy; Filseries 2025</p>
+                <p>Made by <a href="https://github.com/huger6" target="_blank">huger6</a></p>
             </div>
         </div>
     </footer>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{url_for('static', filename='js/script.js')}}"></script>
     {% block js %}{% endblock %}
 </body>
 </html> 

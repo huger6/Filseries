@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+<!-- Title -->
+{% block title %}
+- {{ primaryTitle }}
+{% endblock %}
+
+<!-- CSS -->
+{% block css %}
+    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/title.css')}}">
+{% endblock %}
+
+<!-- Scripts -->
+{% block head_scripts %}
+    <script>
+        const defaultPoster = "{{url_for('static', filename='img/defaultPoster.svg')}}";
+        const defaultBackground = "{{url_for('static', filename='img/background.jpeg')}}";
+    </script>
+{% endblock %}
+
+{% block main %}
+<div id="title-page" data-results='{{ (results | tojson | safe) if results else "{}" }}'>
+    {% if results %}
+    <!-- Backdrop -->
+    <div class="title-backdrop" id="title-backdrop"></div>
+    
+    <div class="title-content">
+        <div class="title-main">
+            <!-- Poster -->
+            <div class="poster-section">
+                <div class="poster-wrapper">
+                    <div id="title-poster"></div>
+                    {% if results.vote_average %}
+                    <div class="poster-rating">
+                        <i class="bi bi-star-fill"></i>
+                        <span>{{ "%.1f"|format(results.vote_average) }}</span>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Info -->
+            <div class="info-section">
+                <div class="title-header">
+                    <h1 class="title-name">{{ results.title if results.title else "Unknown Title" }}</h1>
+                    {% if results.tagline %}
+                    <p class="title-tagline">"{{ results.tagline }}"</p>
+                    {% endif %}
+                </div>
+                
+                <div class="title-meta">
+                    {% if results.release_date %}
+                    <span class="meta-item">
+                        <i class="bi bi-calendar3"></i>
+                        {{ results.release_date }}
+                    </span>
+                    {% endif %}
+                    {% if results.runtime %}
+                    <span class="meta-item">
+                        <i class="bi bi-clock"></i>
+                        {{ results.runtime }} min
+                    </span>
+                    {% endif %}
+                    {% if results.vote_average %}
+                    <span class="meta-item rating">
+                        <i class="bi bi-star-fill"></i>
+                        {{ "%.1f"|format(results.vote_average) }}/10
+                    </span>
+                    {% endif %}
+                </div>
+                
+                {% if results.genres %}
+                <div class="title-genres">
+                    {% for genre in results.genres %}
+                    <span class="genre-tag">{{ genre.get("name") if genre.get("name") else "Unknown" }}</span>
+                    {% endfor %}
+                </div>
+                {% endif %}
+                
+                {% if results.overview %}
+                <div class="title-overview">
+                    <h3>Overview</h3>
+                    <p>{{ results.overview }}</p>
+                </div>
+                {% endif %}
+                
+                <!-- User Actions -->
+                <div class="user-actions">
+                    {% if results.seen %}
+                    <div class="action-status watched">
+                        <i class="bi bi-check-circle-fill"></i>
+                        <span>Watched</span>
+                    </div>
+                    <button class="action-btn secondary">
+                        <i class="bi bi-info-circle"></i> See Details
+                    </button>
+                    <button class="action-btn danger remove-watched">
+                        <i class="bi bi-trash"></i> Remove
+                    </button>
+                    {% elif results.watchlist %}
+                    <div class="action-status in-watchlist">
+                        <i class="bi bi-bookmark-fill"></i>
+                        <span>In Watchlist</span>
+                    </div>
+                    <button class="action-btn primary add-to-watched" data-id="{{ results.id }}">
+                        <i class="bi bi-plus-circle"></i> Mark as Watched
+                    </button>
+                    <button class="action-btn danger remove-to-watch">
+                        <i class="bi bi-trash"></i> Remove
+                    </button>
+                    {% else %}
+                    <button class="action-btn primary add-to-watched" data-id="{{ results.id }}">
+                        <i class="bi bi-check-circle"></i> Add to Watched
+                    </button>
+                    <button class="action-btn secondary add-to-watchlist" data-id="{{ results.id }}">
+                        <i class="bi bi-bookmark-plus"></i> Add to Watchlist
+                    </button>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="title-not-found">
+        <i class="bi bi-film"></i>
+        <h2>Title Not Found</h2>
+        <p>Oops! The title you're looking for doesn't exist.</p>
+        <a href="{{url_for('main.home')}}" class="btn-home">
+            <i class="bi bi-house"></i> Back to Home
+        </a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+<!-- Scripts -->
+{% block js %}
+    <script src="{{url_for('static', filename='js/title.js')}}"></script>
+{% endblock %}

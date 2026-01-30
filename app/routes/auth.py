@@ -48,7 +48,6 @@ def register():
         pw = request.form.get("password")
         pw_confirm = request.form.get("confirm_password")
         
-        print(name)    
         try:
             if validateRegister(username, name, pw, pw_confirm):
                 print("Validate register True")
