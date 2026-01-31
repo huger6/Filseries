@@ -116,7 +116,11 @@
                         </div>
                     </div>
                     <a class="user-btn" href="{{url_for('auth.user')}}" title="My Account">
+                        {% if has_pfp %}
+                        <img src="{{url_for('auth.get_profile_picture')}}" alt="Profile" class="navbar-pfp">
+                        {% else %}
                         <i class="bi bi-person-circle"></i>
+                        {% endif %}
                     </a>
                     {% else %}
                     <a class="login-btn d-none d-md-flex" href="{{url_for('auth.login')}}">
@@ -139,9 +143,7 @@
                     <img src="{{url_for('static', filename='img/logo/logo.jpeg')}}" alt="Filseries Logo" loading="lazy">
                     <span>Filseries</span>
                 </a>
-                <button type="button" class="close-btn" data-bs-dismiss="offcanvas" aria-label="Close">
-                    <i class="bi bi-x-lg"></i>
-                </button>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
             </div>
             <div class="offcanvas-body">
                 <ul class="navbar-nav">
@@ -199,9 +201,11 @@
                 <div class="alerts-container">
                     {% for category, alert in alerts %}
                         <div class="alert alert-{{ category }} alert-dismissable fade show" role="alert">
-                            <i class="bi {% if category == 'error' %}bi-exclamation-circle{% elif category == 'success' %}bi-check-circle{% else %}bi-info-circle{% endif %}"></i>
-                            {{ alert }}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            <div class="alert-content">
+                                <i class="bi {% if category == 'error' %}bi-exclamation-circle{% elif category == 'success' %}bi-check-circle{% else %}bi-info-circle{% endif %}"></i>
+                                {{ alert }}
+                            </div>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>
                     {% endfor %}
                 </div>

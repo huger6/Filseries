@@ -12,8 +12,19 @@
 {% block main %}
 <div class="user-page">
     <div class="user-header">
-        <div class="user-avatar">
-            <i class="bi bi-person-fill"></i>
+        <div class="user-avatar-wrapper">
+            <div class="user-avatar" id="userAvatar">
+                {% if has_pfp %}
+                    <img src="{{ url_for('auth.get_profile_picture') }}" alt="Profile Picture" class="avatar-img">
+                {% else %}
+                    <i class="bi bi-person-fill"></i>
+                {% endif %}
+            </div>
+            <div class="avatar-overlay" id="avatarOverlay">
+                <i class="bi bi-pencil-fill"></i>
+                <span>Edit</span>
+            </div>
+            <input type="file" id="pfpInput" accept="image/*" hidden>
         </div>
         <div class="user-info">
             <h1>{{ current_user.name if current_user.name else current_user.username }}</h1>
@@ -52,4 +63,56 @@
 
 <!-- Scripts -->
 {% block js %}
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const avatarWrapper = document.querySelector('.user-avatar-wrapper');
+    const pfpInput = document.getElementById('pfpInput');
+    const userAvatar = document.getElementById('userAvatar');
+
+    // Click on avatar to upload
+    avatarWrapper.addEventListener('click', () => {
+        pfpInput.click();
+    });
+
+    // Handle file selection
+    pfpInput.addEventListener('change', async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        // Validate file type
+        if (!file.type.startsWith('image/')) {
+            alert('Please select an image file.');
+            return;
+        }
+
+        // Validate file size (max 5MB)
+        if (file.size > 5 * 1024 * 1024) {
+            alert('Image size must be less than 5MB.');
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('pfp', file);
+
+        try {
+            const response = await fetch('{{ url_for("auth.upload_profile_picture") }}', {
+                method: 'POST',
+                body: formData
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                // Update avatar with new image
+                userAvatar.innerHTML = `<img src="{{ url_for('auth.get_profile_picture') }}?t=${Date.now()}" alt="Profile Picture" class="avatar-img">`;
+            } else {
+                alert(data.error || 'Failed to upload image.');
+            }
+        } catch (error) {
+            console.error('Upload error:', error);
+            alert('An error occurred while uploading the image.');
+        }
+    });
+});
+</script>
 {% endblock %}

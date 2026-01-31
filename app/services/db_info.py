@@ -105,3 +105,40 @@ def register_new_user(username, name, pw):
         return False
 
     return True
+
+def change_user_password(user_id: int, new_pw: str):
+    pass
+
+def change_user_username(user_id: int, new_username: str):
+    pass
+
+def get_user_pfp(user_id: int):
+    """Get the user's profile picture from the database"""
+    if not user_id:
+        return None
+    try:
+        result = db.session.execute(
+            text("SELECT pfp FROM users WHERE id=:user_id"),
+            {"user_id": user_id}
+        )
+        row = result.first()
+        if row and row.pfp:
+            return row.pfp
+        return None
+    except Exception:
+        return None
+
+def update_user_pfp(user_id: int, pfp_data: bytes):
+    """Update the user's profile picture in the database"""
+    if not user_id or not pfp_data:
+        return False
+    try:
+        db.session.execute(
+            text("UPDATE users SET pfp=:pfp WHERE id=:user_id"),
+            {"pfp": pfp_data, "user_id": user_id}
+        )
+        db.session.commit()
+        return True
+    except Exception:
+        db.session.rollback()
+        return False

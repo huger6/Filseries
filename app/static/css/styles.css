@@ -364,6 +364,19 @@ a:hover {
     transform: scale(1.1);
 }
 
+.navbar-pfp {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid rgba(var(--secondaryColorRGB), 0.3);
+    transition: all var(--transition-fast);
+}
+
+.user-btn:hover .navbar-pfp {
+    border-color: var(--accentColor);
+}
+
 /* Notification Button */
 .notification-btn {
     position: relative;
@@ -626,7 +639,7 @@ a:hover {
 
 .offcanvas.offcanvas-end {
     transform: translateX(100%);
-    transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
 .offcanvas.show {
@@ -815,43 +828,55 @@ main {
 /* Alerts */
 .alerts-container {
     position: fixed;
-    top: 90px;
-    right: 20px;
+    top: 100px;
+    left: 50%;
+    transform: translateX(-50%);
     z-index: 1050;
-    max-width: 400px;
+    max-width: 450px;
+    width: 90%;
 }
 
 .alert {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     gap: 12px;
     padding: 16px 20px;
     border-radius: 12px;
     margin-bottom: 10px;
     border: none;
+    background-color: rgba(var(--primaryColorRGB), 0.9);
     backdrop-filter: blur(10px);
-    animation: slideIn 0.3s ease;
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    animation: slideDown 0.3s ease;
 }
 
-@keyframes slideIn {
+.alert-content {
+    display: flex;
+    justify-content: flex-start;
+    gap: 12px;
+}
+
+@keyframes slideDown {
     from {
-        transform: translateX(100%);
+        transform: translateY(-100%);
         opacity: 0;
     }
     to {
-        transform: translateX(0);
+        transform: translateY(0);
         opacity: 1;
     }
 }
 
 .alert-error {
-    background: rgba(var(--redColor), 0.15);
+    background: rgba(var(--primaryColorRGB), 0.9);
     color: var(--redColor);
     border-left: 4px solid var(--redColor);
 }
 
 .alert-success {
-    background: rgba(var(--greenColor), 0.15);
+    background: rgba(var(--primaryColorRGB), 0.9);
     color: var(--greenColor);
     border-left: 4px solid var(--greenColor);
 }
@@ -1054,6 +1079,11 @@ footer {
         font-size: 1.2rem;
     }
 
+    .navbar-pfp {
+        width: 28px;
+        height: 28px;
+    }
+
     .notification-badge {
         min-width: 16px;
         height: 16px;
@@ -1063,9 +1093,7 @@ footer {
     }
 
     .alerts-container {
-        left: 20px;
-        right: 20px;
-        max-width: none;
+        padding: 1rem;
     }
 }
 

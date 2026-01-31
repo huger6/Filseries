@@ -8,7 +8,8 @@ CREATE TABLE `users` (
   `name` varchar(255) NOT NULL,
   `email` varchar(255) UNIQUE,
   `username` varchar(50) UNIQUE NOT NULL,
-  `pass_hash` varchar(255) NOT NULL
+  `pass_hash` varchar(255) NOT NULL,
+  `pfp` MEDIUMBLOB
 );
 
 CREATE TABLE `notifications` (
