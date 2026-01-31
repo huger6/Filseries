@@ -1,7 +1,8 @@
 from app.models.user import User
 from app.extensions import bcrypt
-from app.exceptions import RegisterError, LoginError
+from app.exceptions import RegisterError, LoginError, AuthError
 from app.constants import PASSWORD_PATTERN, USERNAME_PATTERN, NAME_PATTERN
+from app.services.db.db_info import username_available
 import re
 
 def validateUsername(username):
@@ -49,3 +50,14 @@ def validateLogin(username, pw):
         raise LoginError("Invalid credentials 2!")
 
     return user
+
+def validateChangeUsername(user_id, new_username):
+    if not validateUsername(new_username):
+        raise AuthError("Invalid username")
+
+    username_found = username_available(new_username)
+    if username_found:
+        raise AuthError("Username already exists")
+    
+    return True
+    

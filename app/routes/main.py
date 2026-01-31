@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, flash
 from flask_login import current_user
 import asyncio
-from app.services.search_info import get_home_page_data
+from app.services.api.search_info import get_home_page_data
 
 main_bp = Blueprint("main", __name__, template_folder="../templates/main")
 

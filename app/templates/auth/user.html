@@ -10,109 +10,177 @@
 {% endblock %}
 
 {% block main %}
-<div class="user-page">
-    <div class="user-header">
-        <div class="user-avatar-wrapper">
-            <div class="user-avatar" id="userAvatar">
-                {% if has_pfp %}
-                    <img src="{{ url_for('auth.get_profile_picture') }}" alt="Profile Picture" class="avatar-img">
-                {% else %}
-                    <i class="bi bi-person-fill"></i>
-                {% endif %}
+    <div class="user-page">
+        <!-- Profile Header -->
+        <div class="user-header">
+            <div class="user-avatar-wrapper">
+                <div class="user-avatar" id="userAvatar">
+                    {% if has_pfp %}
+                        <img src="{{ url_for('auth.get_profile_picture') }}" alt="Profile Picture" class="avatar-img">
+                    {% else %}
+                        <i class="bi bi-person-fill"></i>
+                    {% endif %}
+                </div>
+                <div class="avatar-overlay" id="avatarOverlay">
+                    <i class="bi bi-pencil-fill"></i>
+                    <span>Edit</span>
+                </div>
+                <input type="file" id="pfpInput" accept="image/*" hidden>
             </div>
-            <div class="avatar-overlay" id="avatarOverlay">
-                <i class="bi bi-pencil-fill"></i>
-                <span>Edit</span>
+            <div class="user-info">
+                <h1>{{ current_user.name if current_user.name else current_user.username }}</h1>
+                <p id="usernameDisplay">@{{ current_user.username }}</p>
             </div>
-            <input type="file" id="pfpInput" accept="image/*" hidden>
         </div>
-        <div class="user-info">
-            <h1>{{ current_user.name if current_user.name else current_user.username }}</h1>
-            <p>@{{ current_user.username }}</p>
+        
+        <!-- Stats Section -->
+        <div class="user-stats">
+            <div class="stat-card">
+                <div class="stat-number">0</div>
+                <div class="stat-label">Titles Watched</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">0</div>
+                <div class="stat-label">In Watchlist</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">0</div>
+                <div class="stat-label">Hours Watched</div>
+            </div>
+        </div>
+
+        <!-- Settings Sections -->
+        <div class="user-settings">
+            <!-- Change Username Section -->
+            <div class="settings-card">
+                <div class="settings-header">
+                    <div class="settings-icon">
+                        <i class="bi bi-at"></i>
+                    </div>
+                    <div class="settings-title">
+                        <h3>Change Username</h3>
+                        <p>Update your unique identifier</p>
+                    </div>
+                </div>
+                <div class="settings-body">
+                    <div class="form-group">
+                        <label for="new-username">New Username</label>
+                        <div class="input-wrapper">
+                            <i class="bi bi-person"></i>
+                            <input type="text" 
+                                id="new-username" 
+                                name="new_username" 
+                                class="form-input" 
+                                placeholder="Enter new username"
+                                minlength="3"
+                                maxlength="12"
+                                pattern="^[a-zA-Z0-9_.]{3,12}$"
+                                autocomplete="off">
+                            <div class="input-status" id="username-status">
+                                <i class="bi bi-hourglass-split loading-icon d-none"></i>
+                                <i class="bi bi-check-circle-fill success-icon d-none"></i>
+                                <i class="bi bi-x-circle-fill error-icon d-none"></i>
+                            </div>
+                        </div>
+                        <div class="input-feedback" id="username-feedback"></div>
+                    </div>
+                    <button type="button" class="settings-btn primary" id="save-username-btn" disabled>
+                        <i class="bi bi-check-lg"></i> Save Username
+                    </button>
+                </div>
+            </div>
+
+            <!-- Change Password Section -->
+            <div class="settings-card">
+                <div class="settings-header">
+                    <div class="settings-icon">
+                        <i class="bi bi-key"></i>
+                    </div>
+                    <div class="settings-title">
+                        <h3>Change Password</h3>
+                        <p>Update your account security</p>
+                    </div>
+                </div>
+                <div class="settings-body">
+                    <div class="form-group">
+                        <label for="current-password">Current Password</label>
+                        <div class="input-wrapper">
+                            <i class="bi bi-lock"></i>
+                            <input type="password" 
+                                id="current-password" 
+                                name="current_password" 
+                                class="form-input" 
+                                placeholder="Enter current password"
+                                required>
+                            <button type="button" class="password-toggle" onclick="togglePassword('current-password')">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="new-password">New Password</label>
+                        <div class="input-wrapper">
+                            <i class="bi bi-lock-fill"></i>
+                            <input type="password" 
+                                id="new-password" 
+                                name="new_password" 
+                                class="form-input" 
+                                placeholder="Enter new password"
+                                minlength="4"
+                                maxlength="20"
+                                required>
+                            <button type="button" class="password-toggle" onclick="togglePassword('new-password')">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                        </div>
+                        <div class="password-requirements">
+                            <span class="req" id="req-length"><i class="bi bi-circle"></i> 4-20 characters</span>
+                            <span class="req" id="req-upper"><i class="bi bi-circle"></i> Uppercase letter</span>
+                            <span class="req" id="req-lower"><i class="bi bi-circle"></i> Lowercase letter</span>
+                            <span class="req" id="req-number"><i class="bi bi-circle"></i> Number</span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="confirm-password">Confirm New Password</label>
+                        <div class="input-wrapper">
+                            <i class="bi bi-lock-fill"></i>
+                            <input type="password" 
+                                id="confirm-password" 
+                                name="confirm_password" 
+                                class="form-input" 
+                                placeholder="Confirm new password"
+                                required>
+                            <button type="button" class="password-toggle" onclick="togglePassword('confirm-password')">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                        </div>
+                        <div class="input-feedback" id="password-match-feedback"></div>
+                    </div>
+                    <button type="button" class="settings-btn primary" id="save-password-btn" disabled>
+                        <i class="bi bi-shield-check"></i> Update Password
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Quick Actions -->
+        <div class="user-actions-section">
+            <a href="{{url_for('auth.logout')}}" class="user-action-btn danger">
+                <i class="bi bi-box-arrow-right"></i> Logout
+            </a>
         </div>
     </div>
-    
-    <div class="user-stats">
-        <div class="stat-card">
-            <div class="stat-number">0</div>
-            <div class="stat-label">Titles Watched</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-number">0</div>
-            <div class="stat-label">In Watchlist</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-number">0</div>
-            <div class="stat-label">Hours Watched</div>
+
+    <!-- Toast Notification -->
+    <div class="toast-container" id="toastContainer">
+        <div class="toast" id="toast">
+            <i class="toast-icon bi"></i>
+            <span class="toast-message"></span>
         </div>
     </div>
-    
-    <div class="user-actions-section">
-        <a href="{{url_for('watchlist.watchlist')}}" class="user-action-btn primary">
-            <i class="bi bi-bookmark-star"></i> My Watchlist
-        </a>
-        <a href="{{url_for('auth.change_password')}}" class="user-action-btn primary">
-            <i class="bi bi-key"></i> Change Password
-        </a>
-        <a href="{{url_for('auth.logout')}}" class="user-action-btn danger">
-            <i class="bi bi-box-arrow-right"></i> Logout
-        </a>
-    </div>
-</div>
 {% endblock %}
 
 <!-- Scripts -->
 {% block js %}
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-    const avatarWrapper = document.querySelector('.user-avatar-wrapper');
-    const pfpInput = document.getElementById('pfpInput');
-    const userAvatar = document.getElementById('userAvatar');
-
-    // Click on avatar to upload
-    avatarWrapper.addEventListener('click', () => {
-        pfpInput.click();
-    });
-
-    // Handle file selection
-    pfpInput.addEventListener('change', async (e) => {
-        const file = e.target.files[0];
-        if (!file) return;
-
-        // Validate file type
-        if (!file.type.startsWith('image/')) {
-            alert('Please select an image file.');
-            return;
-        }
-
-        // Validate file size (max 5MB)
-        if (file.size > 5 * 1024 * 1024) {
-            alert('Image size must be less than 5MB.');
-            return;
-        }
-
-        const formData = new FormData();
-        formData.append('pfp', file);
-
-        try {
-            const response = await fetch('{{ url_for("auth.upload_profile_picture") }}', {
-                method: 'POST',
-                body: formData
-            });
-
-            const data = await response.json();
-
-            if (response.ok) {
-                // Update avatar with new image
-                userAvatar.innerHTML = `<img src="{{ url_for('auth.get_profile_picture') }}?t=${Date.now()}" alt="Profile Picture" class="avatar-img">`;
-            } else {
-                alert(data.error || 'Failed to upload image.');
-            }
-        } catch (error) {
-            console.error('Upload error:', error);
-            alert('An error occurred while uploading the image.');
-        }
-    });
-});
-</script>
+    <script src="{{url_for('static', filename='js/user.js')}}"></script>
 {% endblock %}

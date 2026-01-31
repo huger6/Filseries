@@ -8,7 +8,7 @@ from app.constants import GENRES_DEFAULT
 from app.validations import validate_title, validate_page, validate_limit_per_page
 from app.validations import validate_sort_by, validate_genres, validate_years, validate_ratings
 # API
-from app.services.search_info import search_title, get_title_info
+from app.services.api.search_info import search_title, get_title_info
 
 titles_bp = Blueprint("titles", __name__, template_folder="../templates/titles")
 

@@ -3,11 +3,10 @@
 {% block title %} - Error {{ error_code }}{% endblock %}
 
 {% block css %}
-<link href="{{url_for('static', filename='css/error.css')}}" rel="stylesheet">
+    <link href="{{url_for('static', filename='css/error.css')}}" rel="stylesheet">
 {% endblock %}
 
-{% block content %}
-<main class="error-page">
+{% block main %}
     <div class="error-container">
         <div class="error-icon">
             <i class="bi bi-exclamation-triangle-fill"></i>
@@ -26,5 +25,4 @@
             </button>
         </div>
     </div>
-</main>
 {% endblock %}

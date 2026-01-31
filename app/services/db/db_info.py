@@ -2,6 +2,8 @@ from app.extensions import db
 from app.extensions import bcrypt
 from sqlalchemy import text
 
+# User - titles
+
 def fetch_user_marks_id(user_id: int, tmdb_ids: list[int]):
     """
         Returns any relation between the user and the title's ID's provided,
@@ -91,6 +93,30 @@ def fetch_user_marks(user_id: int, id: int, type: str):
 
     return {"seen": seen, "watchlist": watchlist}
 
+# Movies
+
+def add_movie_to_seen(user_id: int, api_movie_id: int, rating: float = None):
+    pass
+
+def remove_movie_from_seen(user_id: int, api_movie_id: int):
+    pass
+
+def update_movie_rating(user_id: int, api_movie_id: int, new_rating: float):
+    pass
+
+# Series
+
+def add_series_to_progress(user_id: int, api_serie_id: int, season: int, status: str, rating: float = None):
+    pass
+
+def update_series_status(user_id: int, api_serie_id: int, season: int, status: str):
+    pass
+
+def update_series_season(user_id: int, api_serie_id: int, last_season_seen: int):
+    pass
+
+# User only
+
 def register_new_user(username, name, pw):
     if not username or not name or not pw:
         return False
@@ -102,15 +128,56 @@ def register_new_user(username, name, pw):
         )
         db.session.commit()
     except Exception:
+        db.session.rollback()
         return False
 
     return True
 
 def change_user_password(user_id: int, new_pw: str):
-    pass
+    if not user_id or not new_pw:
+        return False
+    
+    hashed_password = bcrypt.generate_password_hash(new_pw).decode("utf-8")
+    try:
+        db.session.execute(
+            text("UPDATE users SET pass_hash=:pass_hash WHERE id=:user_id"),
+            {"pass_hash": hashed_password, "user_id": user_id}
+        )
+        db.session.commit()
+    except Exception:
+        db.session.rollback()
+        return False
+    
+    return True
 
 def change_user_username(user_id: int, new_username: str):
-    pass
+    if not user_id or not new_username:
+        return False
+    
+    try:
+        db.session.execute(
+            text("UPDATE users SET username=:new_username WHERE id=:user_id"),
+            {"new_username": new_username, "user_id": user_id}
+        )
+        db.session.commit()
+    except Exception:
+        db.session.rollback()
+        return False
+    
+    return True
+
+def username_available(username):
+    try:
+        result = db.session.execute(
+            text("SELECT username FROM users WHERE username=:username"),
+            {"username": username}
+        )
+        row = result.first()
+        if row and row.username:
+            return False
+        return True
+    except Exception:
+        return False
 
 def get_user_pfp(user_id: int):
     """Get the user's profile picture from the database"""
@@ -142,3 +209,25 @@ def update_user_pfp(user_id: int, pfp_data: bytes):
     except Exception:
         db.session.rollback()
         return False
+    
+# Notifications
+
+def create_notifications(user_id: int, n_type: str, message: str, target_url: str = None):
+    pass
+
+def get_user_notifications(user_id: int, only_unread: bool = True):
+    pass
+
+def mark_notifications_as_read(user_id: int, notification_id: int):
+    pass
+
+def delete_old_notifications(user_id: int, days: int = 30):
+    pass
+
+# Stats
+
+def get_user_stats(user_id: int):
+    pass
+
+def get_recent_activity(user_id: int, limit: int = 10):
+    pass

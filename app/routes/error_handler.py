@@ -1,10 +1,9 @@
 from flask import Blueprint, redirect, url_for, jsonify, render_template, request
-from app.constants import app_constants, http_constants
+from app.constants import app_constants
 from app.exceptions import SearchError, RatingInvalid, TitleLengthInvalid, AcessDenied, StatusError 
 
 
 error_handler_bp = Blueprint("error_handler", __name__, template_folder="../templates/error-handler")
-
 
 # Error messages dictionary
 ERROR_MESSAGES = {
@@ -32,7 +31,7 @@ def render_error_page(error_code, custom_message=None):
         return jsonify({'error': message}), error_code
     
     return render_template(
-        'error.html',
+        "error.html",
         error_code=error_code,
         error_title=title,
         error_message=message,

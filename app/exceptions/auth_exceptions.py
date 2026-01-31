@@ -7,3 +7,6 @@ class RegisterError(MediaError):
 class LoginError(MediaError):
     """An error has occurred during login."""
     pass
+
+class AuthError(MediaError):
+    """Generic error for authentication processes"""

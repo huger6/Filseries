@@ -1,5 +1,5 @@
 import aiohttp
-from app.services.api_info import (
+from app.services.api.api_info import (
     search_title_on_api, 
     get_title_info_on_api, 
     get_title_tconst_on_api,
@@ -7,7 +7,7 @@ from app.services.api_info import (
     get_popular_titles,
     get_top_rated_titles
 )
-from app.services.db_info import fetch_user_marks_id, fetch_user_marks
+from app.services.db.db_info import fetch_user_marks_id, fetch_user_marks
 # Constants
 from app.constants import ALLOWED_FIELDS_SEARCH, ALLOWED_FIELDS_TITLE_SEARCH
 
