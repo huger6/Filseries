@@ -10,6 +10,8 @@ CREATE TABLE `users` (
   `username` varchar(50) UNIQUE NOT NULL,
   `pass_hash` varchar(255) NOT NULL,
   `pfp` MEDIUMBLOB
+  `created_at` timestamp default CURRENT_TIMESTAMP
+  `updated_at` timestamp default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP
 );
 
 CREATE TABLE `notifications` (
@@ -19,7 +21,7 @@ CREATE TABLE `notifications` (
   `message` text,
   `target_url` varchar(255),
   `is_read` boolean DEFAULT false,
-  `created_at` datetime
+  `created_at` timestamp default CURRENT_TIMESTAMP
 );
 
 CREATE TABLE `user_series_progress` (
@@ -28,7 +30,7 @@ CREATE TABLE `user_series_progress` (
   `last_season_seen` int DEFAULT 1,
   `status` varchar(255),
   `user_rating` float,
-  `updated_at` datetime,
+  `updated_at` timestamp default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
   PRIMARY KEY (`user_id`, `api_serie_id`)
 );
 
@@ -36,30 +38,30 @@ CREATE TABLE `user_movies_seen` (
   `user_id` int,
   `api_movie_id` int,
   `user_rating` float,
-  `updated_at` datetime,
+  `updated_at` timestamp default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
   PRIMARY KEY (`user_id`, `api_movie_id`)
 );
 
 CREATE TABLE `user_movies_watchlist` (
   `user_id` int,
   `api_movie_id` int,
-  `updated_at` datetime,
+  `updated_at` timestamp default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
   PRIMARY KEY (`user_id`, `api_movie_id`)
 );
 
 CREATE TABLE `user_series_watchlist` (
   `user_id` int,
   `api_serie_id` int,
-  `updated_at` datetime,
+  `updated_at` timestamp default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
   PRIMARY KEY (`user_id`, `api_serie_id`)
 );
 
-ALTER TABLE `notifications` ADD FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
+ALTER TABLE `notifications` ADD FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 
-ALTER TABLE `user_series_progress` ADD FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
+ALTER TABLE `user_series_progress` ADD FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 
-ALTER TABLE `user_movies_seen` ADD FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
+ALTER TABLE `user_movies_seen` ADD FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 
-ALTER TABLE `user_movies_watchlist` ADD FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
+ALTER TABLE `user_movies_watchlist` ADD FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 
-ALTER TABLE `user_series_watchlist` ADD FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
+ALTER TABLE `user_series_watchlist` ADD FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;

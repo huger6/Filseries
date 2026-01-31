@@ -7,7 +7,7 @@ from app.services.api.api_info import (
     get_popular_titles,
     get_top_rated_titles
 )
-from app.services.db.db_info import fetch_user_marks_id, fetch_user_marks
+from app.services.db import fetch_user_marks_id, fetch_user_marks
 # Constants
 from app.constants import ALLOWED_FIELDS_SEARCH, ALLOWED_FIELDS_TITLE_SEARCH
 

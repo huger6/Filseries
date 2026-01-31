@@ -1,4 +1,5 @@
-from sqlalchemy import Integer, Float, DateTime, ForeignKey, Enum, CheckConstraint
+from datetime import datetime
+from sqlalchemy import Integer, Float, DateTime, ForeignKey, Enum, CheckConstraint, func
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.extensions import db
@@ -16,7 +17,7 @@ class UserMoviesSeen(db.Model):
     user_id: Mapped[int] = mapped_column(Integer, ForeignKey("users.id", ondelete="CASCADE"), primary_key=True)
     api_movie_id: Mapped[int] = mapped_column(Integer, primary_key=True)
     user_rating: Mapped[float | None] = mapped_column(Float, nullable=True)
-    updated_at: Mapped[DateTime | None] = mapped_column(DateTime, nullable=True)
+    updated_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now(), onupdate=func.now(), nullable=False)
 
 
 class UserSeriesProgress(db.Model):
@@ -30,5 +31,5 @@ class UserSeriesProgress(db.Model):
     last_season_seen: Mapped[int | None] = mapped_column(Integer, default=1, nullable=True)
     status: Mapped[str | None] = mapped_column(Enum(*SERIES_STATUS_TYPES, name="series_status"), nullable=True)
     user_rating: Mapped[float | None] = mapped_column(Float, nullable=True)
-    updated_at: Mapped[DateTime | None] = mapped_column(DateTime, nullable=True)
+    updated_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now(), onupdate=func.now(), nullable=False)
 

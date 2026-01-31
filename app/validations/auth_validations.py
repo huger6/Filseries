@@ -2,7 +2,7 @@ from app.models.user import User
 from app.extensions import bcrypt
 from app.exceptions import RegisterError, LoginError, AuthError
 from app.constants import PASSWORD_PATTERN, USERNAME_PATTERN, NAME_PATTERN
-from app.services.db.db_info import username_available
+from app.services.db import username_available
 import re
 
 def validateUsername(username):

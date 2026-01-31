@@ -1,4 +1,5 @@
-from sqlalchemy import Integer, String, Text, Boolean, DateTime, ForeignKey, Enum
+from datetime import datetime
+from sqlalchemy import Integer, String, Text, Boolean, DateTime, ForeignKey, Enum, func
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.extensions import db
@@ -16,4 +17,4 @@ class Notification(db.Model):
     message: Mapped[str | None] = mapped_column(Text, nullable=True)
     target_url: Mapped[str | None] = mapped_column(String(255), nullable=True)
     is_read: Mapped[bool] = mapped_column(Boolean, default=False)
-    created_at: Mapped[DateTime | None] = mapped_column(DateTime, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now(), nullable=False)

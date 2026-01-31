@@ -3,7 +3,7 @@ from app.models import User
 from app.extensions import app, login_manager, db
 from app.routes import blueprints
 from app.utils.converters import MediaTypeConverter
-from app.services.db.db_info import get_user_pfp
+from app.services.db import get_user_pfp
 
 
 @login_manager.user_loader

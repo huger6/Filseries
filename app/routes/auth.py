@@ -2,7 +2,7 @@ from flask import Blueprint, flash, redirect, url_for, jsonify, render_template,
 from flask_login import login_required, current_user, login_user, logout_user
 from app.validations import validateRegister, validateLogin, validateUsername, validatePassword, validatePasswordConfirm
 from app.exceptions import RegisterError, LoginError, AuthError
-from app.services.db.db_info import register_new_user, get_user_pfp, update_user_pfp, username_available, change_user_username as db_change_username, change_user_password
+from app.services.db import register_new_user, get_user_pfp, update_user_pfp, username_available, change_user_username as db_change_username, change_user_password
 from app.extensions import bcrypt
 
 auth_bp = Blueprint("auth", __name__, template_folder='../templates/auth')
