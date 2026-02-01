@@ -10,10 +10,12 @@ from app.exceptions import TitleLengthInvalid, SearchError
 
 def validate_title(title: str) -> None:
     """Validate that the title length is within acceptable bounds."""
-    if title is None:
-        raise TitleLengthInvalid("Title cannot be None")
-    if not MIN_TITLE_LENGTH < len(title) < MAX_TITLE_LENGTH:
-        raise TitleLengthInvalid(f"Current length: {len(title)}; Minimum length: {MIN_TITLE_LENGTH}; Maximum length: {MAX_TITLE_LENGTH}")
+    if title is None or len(title.strip()) == 0:
+        raise TitleLengthInvalid("Please enter a search term")
+    if len(title.strip()) < MIN_TITLE_LENGTH:
+        raise TitleLengthInvalid(f"Search term must be at least {MIN_TITLE_LENGTH} characters")
+    if len(title.strip()) >= MAX_TITLE_LENGTH:
+        raise TitleLengthInvalid(f"Search term is too long (max {MAX_TITLE_LENGTH - 1} characters)")
 
 def validate_page(page: int) -> None:
     """Validate that the page number is valid."""

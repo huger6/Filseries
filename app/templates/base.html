@@ -52,16 +52,98 @@
                         <i class="fas fa-search"></i>
                     </button>
                     <form method="get" action="{{url_for('titles.search')}}" class="search-form">
-                        <i class="fas fa-search search-icon"></i>
-                        <input class="form-control search-input" type="text" name="title" placeholder="Search movies & TV shows...">
-                        <button type="submit" class="search-btn"><i class="fas fa-arrow-right"></i></button>
+                        <!-- Filter Button -->
+                        <div class="navbar-filter-wrapper">
+                            <button type="button" class="navbar-filter-btn" id="navbarFilterBtn" aria-label="Toggle filters">
+                                <i class="bi bi-sliders"></i>
+                            </button>
+                            <!-- Filter Dropdown -->
+                            <div class="navbar-filter-dropdown" id="navbarFilterDropdown">
+                                <div class="filter-header">
+                                    <h6><i class="bi bi-sliders"></i> Search Filters</h6>
+                                    <button type="button" class="filter-reset-btn" id="navbarResetFilters">
+                                        <i class="bi bi-arrow-counterclockwise"></i> Reset
+                                    </button>
+                                </div>
+                                
+                                <!-- Quick Filters -->
+                                <div class="filter-section">
+                                    <label class="filter-section-label">Quick Filters</label>
+                                    <div class="quick-filters">
+                                        <button type="button" class="quick-filter-btn active" data-filter="relevant">
+                                            <i class="bi bi-fire"></i> Relevant Only
+                                        </button>
+                                        <button type="button" class="quick-filter-btn" data-filter="all">
+                                            <i class="bi bi-grid-3x3-gap"></i> All Titles
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <!-- Sort Options -->
+                                <div class="filter-section">
+                                    <label class="filter-section-label">Sort By</label>
+                                    <div class="sort-options">
+                                        <button type="button" class="sort-btn active" data-sort="popularity" data-order="desc">
+                                            <i class="bi bi-graph-up"></i> Popular
+                                        </button>
+                                        <button type="button" class="sort-btn" data-sort="vote_average" data-order="desc">
+                                            <i class="bi bi-star-fill"></i> Rating ↓
+                                        </button>
+                                        <button type="button" class="sort-btn" data-sort="vote_average" data-order="asc">
+                                            <i class="bi bi-star"></i> Rating ↑
+                                        </button>
+                                        <button type="button" class="sort-btn" data-sort="title" data-order="asc">
+                                            <i class="bi bi-sort-alpha-down"></i> A-Z
+                                        </button>
+                                        <button type="button" class="sort-btn" data-sort="title" data-order="desc">
+                                            <i class="bi bi-sort-alpha-up"></i> Z-A
+                                        </button>
+                                        <button type="button" class="sort-btn" data-sort="release_date" data-order="desc">
+                                            <i class="bi bi-calendar-event"></i> Newest
+                                        </button>
+                                        <button type="button" class="sort-btn" data-sort="release_date" data-order="asc">
+                                            <i class="bi bi-calendar"></i> Oldest
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <!-- Genre Filter -->
+                                <div class="filter-section">
+                                    <label class="filter-section-label">Genres</label>
+                                    <div class="genre-filters">
+                                        <button type="button" class="genre-btn active" data-genre="all">All</button>
+                                        <button type="button" class="genre-btn" data-genre="28">Action</button>
+                                        <button type="button" class="genre-btn" data-genre="12">Adventure</button>
+                                        <button type="button" class="genre-btn" data-genre="16">Animation</button>
+                                        <button type="button" class="genre-btn" data-genre="35">Comedy</button>
+                                        <button type="button" class="genre-btn" data-genre="80">Crime</button>
+                                        <button type="button" class="genre-btn" data-genre="99">Documentary</button>
+                                        <button type="button" class="genre-btn" data-genre="18">Drama</button>
+                                        <button type="button" class="genre-btn" data-genre="10751">Family</button>
+                                        <button type="button" class="genre-btn" data-genre="14">Fantasy</button>
+                                        <button type="button" class="genre-btn" data-genre="36">History</button>
+                                        <button type="button" class="genre-btn" data-genre="27">Horror</button>
+                                        <button type="button" class="genre-btn" data-genre="10402">Music</button>
+                                        <button type="button" class="genre-btn" data-genre="9648">Mystery</button>
+                                        <button type="button" class="genre-btn" data-genre="10749">Romance</button>
+                                        <button type="button" class="genre-btn" data-genre="878">Sci-Fi</button>
+                                        <button type="button" class="genre-btn" data-genre="53">Thriller</button>
+                                        <button type="button" class="genre-btn" data-genre="10752">War</button>
+                                        <button type="button" class="genre-btn" data-genre="37">Western</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <input class="form-control search-input" type="text" name="title" placeholder="Search movies & TV shows..." minlength="3" maxlength="100" required>
+                        <span class="search-error-tooltip">Please enter at least 3 characters</span>
+                        <button type="submit" class="search-btn"><i class="fas fa-search"></i></button>
                     </form>
                 </div>
                 <!-- Search overlay for small screens -->
                 <div class="search-overlay">
                     <form method="get" action="{{url_for('titles.search')}}" class="search-overlay-form">
                         <i class="fas fa-search search-overlay-icon"></i>
-                        <input class="form-control search-overlay-input" type="text" name="title" placeholder="Search..." autocomplete="off">
+                        <input class="form-control search-overlay-input" type="text" name="title" placeholder="Search..." autocomplete="off" minlength="3" maxlength="100" required>
                         <button type="button" class="search-overlay-close" aria-label="Close search">
                             <i class="bi bi-x-lg"></i>
                         </button>

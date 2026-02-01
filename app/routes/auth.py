@@ -19,7 +19,12 @@ def login():
 
         try:
             user = validateLogin(username, pw)
-            login_user(user) 
+            login_user(user)
+            
+            # Redirect to next page if provided, otherwise home
+            next_page = request.args.get('next')
+            if next_page and next_page.startswith('/'):  # only allow relative URLs
+                return redirect(next_page)
             return redirect(url_for('main.home'))
         except LoginError as e:
             get_flashed_messages() # clean buffer

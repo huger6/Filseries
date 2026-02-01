@@ -1,3 +1,4 @@
+from flask import request, url_for, redirect
 from flask_login import current_user
 from app.models import User
 from app.extensions import app, login_manager, db
@@ -9,6 +10,11 @@ from app.services.db import get_user_pfp
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
+
+@login_manager.unauthorized_handler
+def unauthorized():
+    """Handle unauthorized access by redirecting to login with next parameter"""
+    return redirect(url_for('auth.login', next=request.url))
 
 @app.context_processor
 def inject_user_pfp():
@@ -32,7 +38,7 @@ def create_app():
         db.create_all()
 
     login_manager.init_app(app)
-    login_manager.login_view = "auth.login"  # redirects to login if user not logged in
+    login_manager.login_view = "auth.login"  # Redirects to login if user not logged in
 
     return app
 

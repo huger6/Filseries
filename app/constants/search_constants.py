@@ -1,6 +1,7 @@
 ALLOWED_FIELDS_SEARCH = {
     "id", "title", "name", "poster_path",
-    "media_type", "release_date", "vote_average", "first_air_date"
+    "media_type", "release_date", "vote_average", "first_air_date",
+    "popularity", "backdrop_path", "genre_ids"
 }
 
 ALLOWED_FIELDS_TITLE_SEARCH = {
