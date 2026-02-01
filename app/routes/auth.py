@@ -3,6 +3,7 @@ from flask_login import login_required, current_user, login_user, logout_user
 from app.validations import validateRegister, validateLogin, validateUsername, validatePassword, validatePasswordConfirm
 from app.exceptions import RegisterError, LoginError, AuthError
 from app.services.db import register_new_user, get_user_pfp, update_user_pfp, username_available, change_user_username as db_change_username, change_user_password
+from app.utils.valid_endpoint import enpoint_is_valid
 from app.extensions import bcrypt
 
 auth_bp = Blueprint("auth", __name__, template_folder='../templates/auth')
@@ -22,9 +23,9 @@ def login():
             login_user(user)
             
             # Redirect to next page if provided, otherwise home
-            next_page = request.args.get('next')
-            if next_page and next_page.startswith('/'):  # only allow relative URLs
-                return redirect(next_page)
+            next_endpoint = request.args.get('next')
+            if next_endpoint and enpoint_is_valid(next_endpoint):
+                return redirect(url_for(next_endpoint))
             return redirect(url_for('main.home'))
         except LoginError as e:
             get_flashed_messages() # clean buffer

@@ -14,7 +14,7 @@ def load_user(user_id):
 @login_manager.unauthorized_handler
 def unauthorized():
     """Handle unauthorized access by redirecting to login with next parameter"""
-    return redirect(url_for('auth.login', next=request.url))
+    return redirect(url_for('auth.login', next=request.endpoint))
 
 @app.context_processor
 def inject_user_pfp():

@@ -20,7 +20,7 @@
             <p>Sign in to continue tracking your entertainment</p>
         </div>
         
-        <form class="auth-form needs-validation" method="post" action="{{url_for('auth.login')}}" novalidate>
+        <form class="auth-form needs-validation" method="post" action="{{request.full_path}}" novalidate>
             <div class="form-group">
                 <label for="username">Username</label>
                 <div class="input-wrapper">
