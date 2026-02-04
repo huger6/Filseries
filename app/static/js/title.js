@@ -4,6 +4,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     displayTitleInfo();
     setupUserActions();
+    setupSeasonsDropdown();
 });
 
 function displayTitleInfo() {
@@ -35,78 +36,361 @@ function displayTitleInfo() {
     }
 }
 
+/**
+ * Check if user is authenticated before performing an action.
+ * If not authenticated, redirects to login page.
+ * @returns {boolean} - True if authenticated, false otherwise
+ */
+function requireAuth() {
+    if (typeof isAuthenticated !== 'undefined' && isAuthenticated === "false") {
+        // Redirect to login with current path as next parameter (relative path only)
+        const currentPath = window.location.pathname;
+        window.location.href = `${loginUrl}?next=${encodeURIComponent(currentPath)}`;
+        return false;
+    }
+    return true;
+}
+
+function setupSeasonsDropdown() {
+    const seasonsSection = document.getElementById("seasons-section");
+    const seasonsHeader = document.getElementById("seasons-header");
+    const seasonsDropdown = document.getElementById("seasons-dropdown");
+    
+    if (!seasonsSection || !seasonsHeader) return;
+    
+    // Toggle dropdown on header click
+    seasonsHeader.addEventListener('click', () => {
+        seasonsSection.classList.toggle('open');
+    });
+    
+    // Handle "Add to Watched" link click - auto-open dropdown (for TV series)
+    document.querySelectorAll('.toggle-watched-link').forEach(link => {
+        link.addEventListener('click', (e) => {
+            const isWatched = link.dataset.isWatched === 'true';
+            
+            // Only open dropdown if adding to watched (not removing)
+            if (!isWatched) {
+                // Small delay to allow scroll, then open dropdown
+                setTimeout(() => {
+                    if (!seasonsSection.classList.contains('open')) {
+                        seasonsSection.classList.add('open');
+                    }
+                }, 100);
+            }
+        });
+    });
+    
+    // Handle season selection
+    document.querySelectorAll('.season-select-btn').forEach(btn => {
+        btn.addEventListener('click', async (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            // Check if user is authenticated
+            if (!requireAuth()) return;
+            
+            const seasonNumber = btn.dataset.season;
+            const seriesId = btn.dataset.seriesId;
+            const watchedLink = document.querySelector('.toggle-watched-link');
+            const watchlistBtn = document.querySelector('.toggle-watchlist');
+            
+            try {
+                const response = await fetch('/tv/progress/update/last-season-seen', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        series_id: seriesId,
+                        season_number: parseInt(seasonNumber)
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    // Remove selected state from all buttons and items
+                    document.querySelectorAll('.season-select-btn').forEach(b => {
+                        b.classList.remove('selected');
+                        b.innerHTML = '<i class="bi bi-check-circle"></i> Select as Last Seen';
+                    });
+                    document.querySelectorAll('.season-item').forEach(item => {
+                        item.classList.remove('selected');
+                    });
+                    
+                    // Add selected state to clicked button and parent item
+                    btn.classList.add('selected');
+                    btn.innerHTML = '<i class="bi bi-check-circle-fill"></i> Selected';
+                    btn.closest('.season-item').classList.add('selected');
+                    
+                    // Update the watched link to show as watched
+                    if (watchedLink) {
+                        watchedLink.dataset.isWatched = 'true';
+                        watchedLink.classList.remove('outlined');
+                        watchedLink.classList.add('filled', 'active');
+                        watchedLink.innerHTML = '<i class="bi bi-check-circle-fill"></i><span>Watched</span>';
+                    }
+                    
+                    // Hide watchlist button with animation
+                    if (watchlistBtn && !watchlistBtn.classList.contains('hidden')) {
+                        watchlistBtn.classList.add('fade-out');
+                        setTimeout(() => {
+                            watchlistBtn.classList.add('hidden');
+                            watchlistBtn.classList.remove('fade-out');
+                            // Reset watchlist state when hidden
+                            watchlistBtn.dataset.inWatchlist = 'false';
+                            watchlistBtn.classList.remove('filled', 'active');
+                            watchlistBtn.classList.add('outlined');
+                            watchlistBtn.innerHTML = '<i class="bi bi-bookmark-plus"></i><span>Add to Watchlist</span>';
+                        }, 300);
+                    }
+                    
+                    // Show success feedback
+                    showNotification(`Season ${seasonNumber} marked as last watched!`, 'success');
+                } else {
+                    showNotification(data.message || 'Failed to update season', 'error');
+                }
+            } catch (error) {
+                console.error('Error updating last season seen:', error);
+                showNotification('Error updating season. Please try again.', 'error');
+            }
+        });
+    });
+}
+
+function showNotification(message, type = 'info') {
+    // Remove existing notifications
+    const existing = document.querySelector('.title-notification');
+    if (existing) existing.remove();
+    
+    const notification = document.createElement('div');
+    notification.className = `title-notification ${type}`;
+    notification.innerHTML = `
+        <i class="bi bi-${type === 'success' ? 'check-circle-fill' : type === 'error' ? 'x-circle-fill' : 'info-circle-fill'}"></i>
+        <span>${message}</span>
+    `;
+    
+    // Add styles
+    notification.style.cssText = `
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        padding: 15px 25px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 500;
+        z-index: 10000;
+        animation: slideIn 0.3s ease;
+        ${type === 'success' ? 'background: var(--greenColor); color: white;' : ''}
+        ${type === 'error' ? 'background: var(--redColor); color: white;' : ''}
+        ${type === 'info' ? 'background: var(--accentColor); color: var(--primaryColor);' : ''}
+    `;
+    
+    document.body.appendChild(notification);
+    
+    // Remove after 3 seconds
+    setTimeout(() => {
+        notification.style.animation = 'slideOut 0.3s ease';
+        setTimeout(() => notification.remove(), 300);
+    }, 3000);
+}
+
 function setupUserActions() {
-    // Add to watched
-    document.querySelectorAll('.add-to-watched').forEach(btn => {
-        btn.addEventListener('click', async (e) => {
-            e.preventDefault();
-            const id = btn.dataset.id;
-            try {
-                const response = await fetch(`/watchlist/add-watched/${id}`, { method: 'POST' });
-                if (response.ok) {
-                    btn.innerHTML = '<i class="bi bi-check-circle-fill"></i> Added!';
-                    btn.disabled = true;
-                    btn.classList.remove('primary');
-                    btn.style.background = 'var(--greenColor)';
-                    setTimeout(() => location.reload(), 1000);
-                }
-            } catch (error) {
-                console.error('Error adding to watched:', error);
-            }
-        });
-    });
+    // Get title data from the page
+    const container = document.getElementById("title-page");
+    const result = JSON.parse(container.dataset.results || "{}");
+    const mediaType = result.media_type; // "movie" or "tv"
+    const titleId = result.id;
 
-    // Add to watchlist
-    document.querySelectorAll('.add-to-watchlist').forEach(btn => {
+    // Toggle Watched Button (for movies)
+    document.querySelectorAll('.toggle-watched').forEach(btn => {
         btn.addEventListener('click', async (e) => {
             e.preventDefault();
-            const id = btn.dataset.id;
+            
+            // Check if user is authenticated
+            if (!requireAuth()) return;
+            
+            const id = btn.dataset.id || titleId;
+            const isWatched = btn.dataset.isWatched === 'true';
+            const watchlistBtn = document.querySelector('.toggle-watchlist');
+            
+            // Determine the correct endpoint based on current state and media type
+            const endpoint = isWatched 
+                ? (mediaType === 'tv' ? '/tv/progress/remove' : '/movies/seen/remove')
+                : (mediaType === 'tv' ? '/tv/progress/add' : '/movies/seen/add');
+            
             try {
-                const response = await fetch(`/watchlist/add/${id}`, { method: 'POST' });
-                if (response.ok) {
-                    btn.innerHTML = '<i class="bi bi-bookmark-fill"></i> Added!';
-                    btn.disabled = true;
-                    btn.style.borderColor = '#ffc107';
-                    btn.style.color = '#ffc107';
-                    setTimeout(() => location.reload(), 1000);
-                }
-            } catch (error) {
-                console.error('Error adding to watchlist:', error);
-            }
-        });
-    });
-
-    // Remove from watched
-    document.querySelectorAll('.remove-watched').forEach(btn => {
-        btn.addEventListener('click', async (e) => {
-            e.preventDefault();
-            if (confirm('Are you sure you want to remove this from your watched list?')) {
-                try {
-                    const response = await fetch(`/watchlist/remove-watched`, { method: 'POST' });
-                    if (response.ok) {
-                        location.reload();
+                btn.disabled = true;
+                const response = await fetch(endpoint, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id: parseInt(id) })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    // Toggle the state
+                    const newState = !isWatched;
+                    btn.dataset.isWatched = newState.toString();
+                    
+                    // Update button appearance
+                    if (newState) {
+                        // Marked as watched
+                        btn.classList.remove('outlined');
+                        btn.classList.add('filled', 'active');
+                        btn.innerHTML = '<i class="bi bi-check-circle-fill"></i><span>Watched</span>';
+                        showNotification('Added to your watched list!', 'success');
+                        
+                        // Hide watchlist button with animation
+                        if (watchlistBtn) {
+                            watchlistBtn.classList.add('fade-out');
+                            setTimeout(() => {
+                                watchlistBtn.classList.add('hidden');
+                                watchlistBtn.classList.remove('fade-out');
+                                // Reset watchlist state when hidden
+                                watchlistBtn.dataset.inWatchlist = 'false';
+                                watchlistBtn.classList.remove('filled', 'active');
+                                watchlistBtn.classList.add('outlined');
+                                watchlistBtn.innerHTML = '<i class="bi bi-bookmark-plus"></i><span>Add to Watchlist</span>';
+                            }, 300);
+                        }
+                    } else {
+                        // Removed from watched
+                        btn.classList.remove('filled', 'active');
+                        btn.classList.add('outlined');
+                        btn.innerHTML = '<i class="bi bi-check-circle"></i><span>Add to Watched</span>';
+                        showNotification('Removed from your watched list', 'info');
+                        
+                        // Show watchlist button with animation
+                        if (watchlistBtn) {
+                            watchlistBtn.classList.remove('hidden');
+                            watchlistBtn.classList.add('fade-in');
+                            setTimeout(() => {
+                                watchlistBtn.classList.remove('fade-in');
+                            }, 300);
+                        }
                     }
-                } catch (error) {
+                } else {
+                    showNotification(data.message || 'Failed to update', 'error');
+                }
+            } catch (error) {
+                console.error('Error toggling watched:', error);
+                showNotification('Error updating. Please try again.', 'error');
+            } finally {
+                btn.disabled = false;
+            }
+        });
+    });
+
+    // Toggle Watchlist Button
+    document.querySelectorAll('.toggle-watchlist').forEach(btn => {
+        btn.addEventListener('click', async (e) => {
+            e.preventDefault();
+            
+            // Check if user is authenticated
+            if (!requireAuth()) return;
+            
+            const id = btn.dataset.id || titleId;
+            const inWatchlist = btn.dataset.inWatchlist === 'true';
+            
+            // Determine the correct endpoint based on current state and media type
+            const endpoint = inWatchlist 
+                ? (mediaType === 'tv' ? '/tv/watchlist/remove' : '/movies/watchlist/remove')
+                : (mediaType === 'tv' ? '/tv/watchlist/add' : '/movies/watchlist/add');
+            
+            try {
+                btn.disabled = true;
+                const response = await fetch(endpoint, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id: parseInt(id) })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    // Toggle the state
+                    const newState = !inWatchlist;
+                    btn.dataset.inWatchlist = newState.toString();
+                    
+                    // Update button appearance
+                    if (newState) {
+                        btn.classList.remove('outlined');
+                        btn.classList.add('filled', 'active');
+                        btn.innerHTML = '<i class="bi bi-bookmark-fill"></i><span>In Watchlist</span>';
+                        showNotification('Added to your watchlist!', 'success');
+                    } else {
+                        btn.classList.remove('filled', 'active');
+                        btn.classList.add('outlined');
+                        btn.innerHTML = '<i class="bi bi-bookmark-plus"></i><span>Add to Watchlist</span>';
+                        showNotification('Removed from your watchlist', 'info');
+                    }
+                } else {
+                    showNotification(data.message || 'Failed to update', 'error');
+                }
+            } catch (error) {
+                console.error('Error toggling watchlist:', error);
+                showNotification('Error updating. Please try again.', 'error');
+            } finally {
+                btn.disabled = false;
+            }
+        });
+    });
+
+    // Handle TV series watched link (scrolls to seasons and opens dropdown)
+    document.querySelectorAll('.toggle-watched-link').forEach(link => {
+        link.addEventListener('click', (e) => {
+            // Check if user is authenticated
+            if (!requireAuth()) {
+                e.preventDefault();
+                return;
+            }
+            
+            const isWatched = link.dataset.isWatched === 'true';
+            const watchlistBtn = document.querySelector('.toggle-watchlist');
+            
+            // If already watched, toggle off (remove from watched)
+            if (isWatched) {
+                e.preventDefault();
+                
+                const id = link.dataset.id || titleId;
+                
+                fetch('/tv/progress/remove', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id: parseInt(id) })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Update link appearance
+                        link.dataset.isWatched = 'false';
+                        link.classList.remove('filled', 'active');
+                        link.classList.add('outlined');
+                        link.innerHTML = '<i class="bi bi-check-circle"></i><span>Add to Watched</span>';
+                        showNotification('Removed from your watched list', 'info');
+                        
+                        // Show watchlist button with animation
+                        if (watchlistBtn) {
+                            watchlistBtn.classList.remove('hidden');
+                            watchlistBtn.classList.add('fade-in');
+                            setTimeout(() => {
+                                watchlistBtn.classList.remove('fade-in');
+                            }, 300);
+                        }
+                    } else {
+                        showNotification(data.message || 'Failed to remove', 'error');
+                    }
+                })
+                .catch(error => {
                     console.error('Error removing from watched:', error);
-                }
+                    showNotification('Error updating. Please try again.', 'error');
+                });
             }
-        });
-    });
-
-    // Remove from watchlist
-    document.querySelectorAll('.remove-to-watch').forEach(btn => {
-        btn.addEventListener('click', async (e) => {
-            e.preventDefault();
-            if (confirm('Are you sure you want to remove this from your watchlist?')) {
-                try {
-                    const response = await fetch(`/watchlist/remove`, { method: 'POST' });
-                    if (response.ok) {
-                        location.reload();
-                    }
-                } catch (error) {
-                    console.error('Error removing from watchlist:', error);
-                }
-            }
+            // If not watched, the link will scroll to the seasons section (default behavior)
         });
     });
 }

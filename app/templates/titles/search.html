@@ -49,6 +49,22 @@
                         </div>
                     </div>
                     
+                    <!-- Media Type Filter -->
+                    <div class="filter-section">
+                        <label class="filter-section-label">Type</label>
+                        <div class="media-type-filters">
+                            <button type="button" class="media-type-btn active" data-type="all">
+                                <i class="bi bi-collection"></i> All
+                            </button>
+                            <button type="button" class="media-type-btn" data-type="movie">
+                                <i class="bi bi-film"></i> Movies
+                            </button>
+                            <button type="button" class="media-type-btn" data-type="tv">
+                                <i class="bi bi-tv"></i> Series
+                            </button>
+                        </div>
+                    </div>
+                    
                     <!-- Sort Options -->
                     <div class="filter-section">
                         <label class="filter-section-label">Sort By</label>
@@ -126,7 +142,8 @@
                data-release="{{ result.release_date or '' }}"
                data-title="{{ result.title }}"
                data-backdrop="{{ result.backdrop_path or '' }}"
-               data-genres="{{ result.genre_ids | tojson if result.genre_ids else '[]' }}">
+               data-genres="{{ result.genre_ids | tojson if result.genre_ids else '[]' }}"
+               data-type="{{ result.media_type }}">
                 <div class="card-poster-container">
                     <div class="card-poster">
                         <img src="{{ 'https://image.tmdb.org/t/p/w300' ~ result.poster_path if result.poster_path else url_for('static', filename='img/defaultPoster.svg') }}" alt="{{ result.title }}" loading="lazy" class="poster-img{% if not result.poster_path %} default-poster{% endif %}">

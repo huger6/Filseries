@@ -5,7 +5,8 @@ from app.services.api.api_info import (
     get_title_tconst_on_api,
     get_trending_titles,
     get_popular_titles,
-    get_top_rated_titles
+    get_top_rated_titles,
+    get_series_seasons_on_api
 )
 from app.services.db import fetch_user_marks_id, fetch_user_marks
 # Constants
@@ -104,6 +105,10 @@ async def get_title_info(id: int, search_type: str, user_id = None) -> dict:
         data = await get_title_info_on_api(session, id, search_type)
         # Get tconst
         tconst = await get_title_tconst_on_api(session, id, search_type)
+        # Get seasons info for TV shows
+        seasons_data = None
+        if search_type == "tv":
+            seasons_data = await get_series_seasons_on_api(session, id)
         # Get user info
         user_marks = fetch_user_marks(user_id, id, search_type)
         # Filter information
@@ -120,6 +125,10 @@ async def get_title_info(id: int, search_type: str, user_id = None) -> dict:
             # Handle first_air_date for TV shows
             if "first_air_date" in data and "release_date" not in data:
                 data["release_date"] = data.get("first_air_date")
+            # Add seasons data for TV shows
+            if seasons_data:
+                data["number_of_seasons"] = seasons_data.get("number_of_seasons", 0)
+                data["seasons"] = seasons_data.get("seasons", [])
 
     return data if data else {}
 

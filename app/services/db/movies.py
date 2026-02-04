@@ -2,6 +2,44 @@ from app.extensions import db
 from sqlalchemy import text
 
 # ============================================================
+# Movies - Check Status
+# ============================================================
+
+def is_movie_in_seen(user_id: int, api_movie_id: int) -> bool:
+    """
+    Checks if a movie is already in the user's seen list.
+    """
+    if not user_id or not api_movie_id:
+        return False
+    
+    try:
+        result = db.session.execute(
+            text("SELECT 1 FROM user_movies_seen WHERE user_id=:user_id AND api_movie_id=:api_movie_id"),
+            {"user_id": user_id, "api_movie_id": api_movie_id}
+        )
+        return result.fetchone() is not None
+    except Exception:
+        return False
+
+
+def is_movie_in_watchlist(user_id: int, api_movie_id: int) -> bool:
+    """
+    Checks if a movie is already in the user's watchlist.
+    """
+    if not user_id or not api_movie_id:
+        return False
+    
+    try:
+        result = db.session.execute(
+            text("SELECT 1 FROM user_movies_watchlist WHERE user_id=:user_id AND api_movie_id=:api_movie_id"),
+            {"user_id": user_id, "api_movie_id": api_movie_id}
+        )
+        return result.fetchone() is not None
+    except Exception:
+        return False
+
+
+# ============================================================
 # Movies - Seen
 # ============================================================
 

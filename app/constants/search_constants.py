@@ -7,7 +7,8 @@ ALLOWED_FIELDS_SEARCH = {
 ALLOWED_FIELDS_TITLE_SEARCH = {
     "id", "title", "name", "poster_path", "media_type", 
     "release_date","vote_average", "backdrop_path", "genres",
-    "original_language", "popularity", "runtime", "overview", "first_air_date"
+    "original_language", "popularity", "runtime", "overview", "first_air_date",
+    "number_of_seasons", "seasons"
 }
 
 ALLOWED_FIELDS_DETAILED = {

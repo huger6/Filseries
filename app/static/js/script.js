@@ -150,8 +150,11 @@ function initNavbarFilterDropdown() {
         quickFilter: 'relevant',
         sortBy: 'popularity',
         sortOrder: 'desc',
-        genres: ['all']
+        genres: ['all'],
+        mediaType: 'all'
     };
+    // Ensure mediaType exists for older saved states
+    if (!filterState.mediaType) filterState.mediaType = 'all';
 
     // Apply saved state to UI
     applyStateToUI();
@@ -231,6 +234,17 @@ function initNavbarFilterDropdown() {
         });
     });
 
+    // Media type buttons
+    filterDropdown.querySelectorAll('.media-type-btn').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            filterDropdown.querySelectorAll('.media-type-btn').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            filterState.mediaType = this.dataset.type;
+            saveState();
+        });
+    });
+
     // Reset button
     if (resetBtn) {
         resetBtn.addEventListener('click', function(e) {
@@ -239,7 +253,8 @@ function initNavbarFilterDropdown() {
                 quickFilter: 'relevant',
                 sortBy: 'popularity',
                 sortOrder: 'desc',
-                genres: ['all']
+                genres: ['all'],
+                mediaType: 'all'
             };
             applyStateToUI();
             saveState();
@@ -267,6 +282,11 @@ function initNavbarFilterDropdown() {
                 if (gBtn) gBtn.classList.add('active');
             });
         }
+
+        // Media type buttons
+        filterDropdown.querySelectorAll('.media-type-btn').forEach(b => b.classList.remove('active'));
+        const mediaTypeBtn = filterDropdown.querySelector(`.media-type-btn[data-type="${filterState.mediaType || 'all'}"]`);
+        if (mediaTypeBtn) mediaTypeBtn.classList.add('active');
     }
 
     function saveState() {
@@ -276,7 +296,8 @@ function initNavbarFilterDropdown() {
         const isDefault = filterState.quickFilter === 'relevant' && 
                           filterState.sortBy === 'popularity' && 
                           filterState.sortOrder === 'desc' && 
-                          filterState.genres.includes('all');
+                          filterState.genres.includes('all') &&
+                          (filterState.mediaType === 'all' || !filterState.mediaType);
         
         if (!isDefault) {
             filterBtn.style.background = 'var(--accentColor)';

@@ -198,6 +198,45 @@
     font-size: 1rem;
 }
 
+/* Media Type Filters */
+.media-type-filters {
+    display: flex;
+    gap: 10px;
+}
+
+.media-type-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 14px;
+    background: rgba(var(--secondaryColorRGB), 0.08);
+    border: 1px solid rgba(var(--secondaryColorRGB), 0.15);
+    border-radius: 12px;
+    color: rgba(var(--secondaryColorRGB), 0.8);
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.media-type-btn:hover {
+    background: rgba(var(--accentColorRGB), 0.15);
+    border-color: rgba(var(--accentColorRGB), 0.3);
+    color: var(--accentColor);
+}
+
+.media-type-btn.active {
+    background: linear-gradient(135deg, var(--accentColor), var(--accentColorHover));
+    border-color: transparent;
+    color: var(--primaryColor);
+}
+
+.media-type-btn i {
+    font-size: 1rem;
+}
+
 /* Sort Options */
 .sort-options {
     display: flex;

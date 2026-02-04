@@ -178,6 +178,7 @@
     line-height: 1.7;
     color: rgba(var(--secondaryColorRGB), 0.85);
     max-width: 800px;
+    text-align: justify;
 }
 
 /* User Actions */
@@ -210,6 +211,119 @@
     border: 2px solid #ffc107;
 }
 
+/* Custom Title Buttons */
+.title-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 12px 28px;
+    border-radius: 30px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: 2px solid transparent;
+    text-decoration: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.title-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.title-btn.hidden {
+    display: none !important;
+}
+
+/* Outlined Style */
+.title-btn.outlined {
+    background: transparent;
+    color: var(--secondaryColor);
+    border-color: rgba(var(--secondaryColorRGB), 0.4);
+}
+
+.title-btn.outlined:hover {
+    border-color: var(--accentColor);
+    color: var(--accentColor);
+    transform: translateY(-2px);
+}
+
+.title-btn.outlined:active {
+    transform: translateY(0);
+}
+
+/* Filled Style */
+.title-btn.filled {
+    background: linear-gradient(135deg, var(--accentColor), var(--accentColorHover));
+    color: var(--primaryColor);
+    border-color: transparent;
+    box-shadow: 0 4px 15px rgba(var(--accentColorRGB), 0.3);
+}
+
+.title-btn.filled:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 25px rgba(var(--accentColorRGB), 0.4);
+}
+
+.title-btn.filled:active {
+    transform: translateY(0);
+}
+
+/* Active/Selected State (green) */
+.title-btn.filled.active {
+    background: linear-gradient(135deg, var(--greenColor), #1db954);
+    box-shadow: 0 4px 15px rgba(29, 185, 84, 0.3);
+}
+
+.title-btn.filled.active:hover {
+    box-shadow: 0 6px 25px rgba(29, 185, 84, 0.4);
+}
+
+/* Watchlist specific active state (golden) */
+.title-btn.toggle-watchlist.filled.active {
+    background: linear-gradient(135deg, #ffc107, #ffca2c);
+    color: #1a1a2e;
+    box-shadow: 0 4px 15px rgba(255, 193, 7, 0.3);
+}
+
+.title-btn.toggle-watchlist.filled.active:hover {
+    box-shadow: 0 6px 25px rgba(255, 193, 7, 0.4);
+}
+
+/* Animation for show/hide */
+.title-btn.fade-out {
+    animation: fadeOutBtn 0.3s ease forwards;
+}
+
+.title-btn.fade-in {
+    animation: fadeInBtn 0.3s ease forwards;
+}
+
+@keyframes fadeOutBtn {
+    from {
+        opacity: 1;
+        transform: scale(1);
+    }
+    to {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+}
+
+@keyframes fadeInBtn {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
 .action-btn {
     display: inline-flex;
     align-items: center;
@@ -229,9 +343,18 @@
     box-shadow: 0 4px 20px rgba(var(--accentColorRGB), 0.3);
 }
 
+.action-btn.primary.active {
+    background: linear-gradient(135deg, var(--greenColor), #1db954);
+    box-shadow: 0 4px 20px rgba(29, 185, 84, 0.3);
+}
+
 .action-btn.primary:hover {
     transform: translateY(-3px);
     box-shadow: 0 8px 30px rgba(var(--accentColorRGB), 0.4);
+}
+
+.action-btn.primary.active:hover {
+    box-shadow: 0 8px 30px rgba(29, 185, 84, 0.4);
 }
 
 .action-btn.secondary {
@@ -302,6 +425,210 @@
     transform: translateY(-3px);
     box-shadow: 0 8px 30px rgba(var(--accentColorRGB), 0.4);
     color: var(--primaryColor);
+}
+
+/* Seasons Section */
+.seasons-section {
+    margin-top: 50px;
+    background: rgba(var(--primaryColorRGB), 0.6);
+    border-radius: 20px;
+    border: 1px solid rgba(var(--secondaryColorRGB), 0.1);
+    overflow: hidden;
+    scroll-margin-top: 100px;
+}
+
+.seasons-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 30px;
+    cursor: pointer;
+    background: rgba(var(--accentColorRGB), 0.1);
+    transition: all 0.3s ease;
+}
+
+.seasons-header:hover {
+    background: rgba(var(--accentColorRGB), 0.15);
+}
+
+.seasons-header h3 {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 1.3rem;
+    color: var(--secondaryColor);
+    margin: 0;
+}
+
+.seasons-header h3 i {
+    color: var(--accentColor);
+}
+
+.seasons-count {
+    font-weight: 400;
+    color: rgba(var(--secondaryColorRGB), 0.7);
+    font-size: 1rem;
+}
+
+.seasons-toggle-icon {
+    font-size: 1.2rem;
+    color: var(--accentColor);
+    transition: transform 0.3s ease;
+}
+
+.seasons-section.open .seasons-toggle-icon {
+    transform: rotate(180deg);
+}
+
+.seasons-dropdown {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease;
+}
+
+.seasons-section.open .seasons-dropdown {
+    max-height: 3000px;
+}
+
+.seasons-list {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.season-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    background: rgba(var(--primaryColorRGB), 0.8);
+    border-radius: 12px;
+    border: 1px solid rgba(var(--secondaryColorRGB), 0.1);
+    transition: all 0.3s ease;
+}
+
+.season-item:hover {
+    background: rgba(var(--accentColorRGB), 0.1);
+    border-color: rgba(var(--accentColorRGB), 0.3);
+}
+
+.season-item.selected {
+    background: rgba(56, 217, 20, 0.15);
+    border-color: var(--greenColor);
+}
+
+.season-info {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+}
+
+.season-number {
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: var(--secondaryColor);
+}
+
+.season-name {
+    color: rgba(var(--secondaryColorRGB), 0.7);
+    font-style: italic;
+}
+
+.season-episodes {
+    font-size: 0.9rem;
+    color: rgba(var(--secondaryColorRGB), 0.6);
+    padding: 4px 12px;
+    background: rgba(var(--secondaryColorRGB), 0.1);
+    border-radius: 20px;
+}
+
+.season-select-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 18px;
+    border-radius: 25px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    border: 2px solid rgba(var(--accentColorRGB), 0.3);
+    background: transparent;
+    color: var(--accentColor);
+    transition: all 0.3s ease;
+}
+
+.season-select-btn:hover {
+    background: var(--accentColor);
+    color: var(--primaryColor);
+    border-color: var(--accentColor);
+}
+
+.season-select-btn.selected {
+    background: var(--greenColor);
+    color: var(--primaryColor);
+    border-color: var(--greenColor);
+}
+
+.season-select-btn.selected i {
+    animation: checkPop 0.3s ease;
+}
+
+@keyframes checkPop {
+    0% { transform: scale(0); }
+    50% { transform: scale(1.3); }
+    100% { transform: scale(1); }
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideOut {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}
+
+.seasons-actions {
+    padding: 15px 20px 20px;
+    border-top: 1px solid rgba(var(--secondaryColorRGB), 0.1);
+}
+
+.seasons-help-text {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9rem;
+    color: rgba(var(--secondaryColorRGB), 0.6);
+    margin: 0;
+}
+
+.seasons-help-text i {
+    color: var(--accentColor);
+}
+
+/* Meta item for seasons */
+.meta-item.seasons i {
+    color: var(--accentColor);
+}
+
+/* Add to watched link styling */
+.add-to-watched-link {
+    text-decoration: none;
 }
 
 /* Responsive */
@@ -385,6 +712,34 @@
 
     .action-btn,
     .action-status {
+        width: 100%;
+        justify-content: center;
+    }
+
+    /* Seasons responsive */
+    .seasons-section {
+        margin-top: 30px;
+    }
+
+    .seasons-header {
+        padding: 15px 20px;
+    }
+
+    .seasons-header h3 {
+        font-size: 1.1rem;
+    }
+
+    .season-item {
+        flex-direction: column;
+        gap: 12px;
+        text-align: center;
+    }
+
+    .season-info {
+        justify-content: center;
+    }
+
+    .season-select-btn {
         width: 100%;
         justify-content: center;
     }

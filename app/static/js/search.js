@@ -26,8 +26,11 @@ function initSearchFilters() {
         quickFilter: 'relevant',
         sortBy: 'popularity',
         sortOrder: 'desc',
-        genres: ['all']
+        genres: ['all'],
+        mediaType: 'all'
     };
+    // Ensure mediaType exists for older saved states
+    if (!filterState.mediaType) filterState.mediaType = 'all';
 
     // Apply saved state to UI
     applyStateToUI();
@@ -107,6 +110,16 @@ function initSearchFilters() {
         });
     });
 
+    // Media type buttons
+    filterDropdown.querySelectorAll('.media-type-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            filterDropdown.querySelectorAll('.media-type-btn').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            filterState.mediaType = this.dataset.type;
+            applyFilters();
+        });
+    });
+
     // Reset filters
     resetFiltersBtn.addEventListener('click', function() {
         // Reset state
@@ -114,7 +127,8 @@ function initSearchFilters() {
             quickFilter: 'relevant',
             sortBy: 'popularity',
             sortOrder: 'desc',
-            genres: ['all']
+            genres: ['all'],
+            mediaType: 'all'
         };
 
         // Reset UI and apply
@@ -148,6 +162,11 @@ function initSearchFilters() {
                 if (gBtn) gBtn.classList.add('active');
             });
         }
+
+        // Media type buttons
+        filterDropdown.querySelectorAll('.media-type-btn').forEach(b => b.classList.remove('active'));
+        const mediaTypeBtn = filterDropdown.querySelector(`.media-type-btn[data-type="${filterState.mediaType || 'all'}"]`);
+        if (mediaTypeBtn) mediaTypeBtn.classList.add('active');
     }
 
     // Apply filters function
@@ -166,7 +185,14 @@ function initSearchFilters() {
             });
         }
 
-        // 2. Apply genre filter
+        // 2. Apply media type filter
+        if (filterState.mediaType && filterState.mediaType !== 'all') {
+            filteredCards = filteredCards.filter(card => {
+                return card.dataset.type === filterState.mediaType;
+            });
+        }
+
+        // 3. Apply genre filter
         if (!filterState.genres.includes('all')) {
             filteredCards = filteredCards.filter(card => {
                 const cardGenres = JSON.parse(card.dataset.genres || '[]').map(String);
@@ -174,7 +200,7 @@ function initSearchFilters() {
             });
         }
 
-        // 3. Sort
+        // 4. Sort
         filteredCards.sort((a, b) => {
             let aVal, bVal;
 
@@ -208,7 +234,7 @@ function initSearchFilters() {
             }
         });
 
-        // 4. Update DOM
+        // 5. Update DOM
         // Hide all cards first
         allCards.forEach(card => {
             card.style.display = 'none';
@@ -247,6 +273,13 @@ function initSearchFilters() {
         // Quick filter tag
         if (filterState.quickFilter === 'relevant') {
             tags.push('<span class="active-filter-tag"><i class="bi bi-fire"></i> Relevant Only</span>');
+        }
+
+        // Media type tag
+        if (filterState.mediaType && filterState.mediaType !== 'all') {
+            const typeLabel = filterState.mediaType === 'movie' ? 'Movies' : 'Series';
+            const typeIcon = filterState.mediaType === 'movie' ? 'film' : 'tv';
+            tags.push(`<span class="active-filter-tag"><i class="bi bi-${typeIcon}"></i> ${typeLabel}</span>`);
         }
 
         // Sort tag

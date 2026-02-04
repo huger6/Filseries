@@ -2,6 +2,44 @@ from app.extensions import db
 from sqlalchemy import text
 
 # ============================================================
+# Series - Check Status
+# ============================================================
+
+def is_series_in_progress(user_id: int, api_serie_id: int) -> bool:
+    """
+    Checks if a series is already in the user's progress/seen list.
+    """
+    if not user_id or not api_serie_id:
+        return False
+    
+    try:
+        result = db.session.execute(
+            text("SELECT 1 FROM user_series_progress WHERE user_id=:user_id AND api_serie_id=:api_serie_id"),
+            {"user_id": user_id, "api_serie_id": api_serie_id}
+        )
+        return result.fetchone() is not None
+    except Exception:
+        return False
+
+
+def is_series_in_watchlist(user_id: int, api_serie_id: int) -> bool:
+    """
+    Checks if a series is already in the user's watchlist.
+    """
+    if not user_id or not api_serie_id:
+        return False
+    
+    try:
+        result = db.session.execute(
+            text("SELECT 1 FROM user_series_watchlist WHERE user_id=:user_id AND api_serie_id=:api_serie_id"),
+            {"user_id": user_id, "api_serie_id": api_serie_id}
+        )
+        return result.fetchone() is not None
+    except Exception:
+        return False
+
+
+# ============================================================
 # Series - Progress (Seen)
 # ============================================================
 

@@ -115,5 +115,39 @@ async def get_title_info_on_api(session, tmdb_id, search_type):
         return data if data else None
 
 
+async def get_series_seasons_on_api(session, tmdb_id):
+    """Get series seasons info from TMDB API"""
+    url = f"https://api.themoviedb.org/3/tv/{tmdb_id}"
+    params = {"api_key": api_key}
+
+    async with session.get(url, params=params) as resp:
+        if resp.status != 200:
+            return None
+
+        data = await resp.json()
+        if not data:
+            return None
+        
+        # Extract season info
+        seasons = data.get("seasons", [])
+        # Filter out "Specials" season (season_number = 0) and format the data
+        formatted_seasons = []
+        for season in seasons:
+            season_number = season.get("season_number", 0)
+            if season_number > 0:  # Skip specials (season 0)
+                formatted_seasons.append({
+                    "season_number": season_number,
+                    "name": season.get("name", f"Season {season_number}"),
+                    "episode_count": season.get("episode_count", 0),
+                    "air_date": season.get("air_date"),
+                    "poster_path": season.get("poster_path")
+                })
+        
+        return {
+            "number_of_seasons": data.get("number_of_seasons", 0),
+            "seasons": formatted_seasons
+        }
+
+
 def __check_api_key():
     print(f"API KEY: {api_key}")
