@@ -229,6 +229,43 @@
     overflow: hidden;
 }
 
+/* Button text with main and subtitle */
+.title-btn .btn-text-main {
+    display: inline;
+}
+
+.title-btn .btn-text-sub {
+    display: inline;
+    font-size: 0.75rem;
+    font-weight: 400;
+    opacity: 0.85;
+    margin-left: 4px;
+}
+
+/* Stacked layout for progress buttons */
+.title-btn.filled.active:has(.btn-text-sub) {
+    flex-direction: column;
+    gap: 2px;
+    padding: 10px 28px;
+}
+
+.title-btn.filled.active:has(.btn-text-sub) .btn-text-main {
+    font-size: 0.95rem;
+}
+
+.title-btn.filled.active:has(.btn-text-sub) .btn-text-sub {
+    display: block;
+    margin-left: 0;
+    font-size: 0.7rem;
+}
+
+.title-btn.filled.active:has(.btn-text-sub) i {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
 .title-btn:disabled {
     opacity: 0.6;
     cursor: not-allowed;
@@ -516,6 +553,33 @@
 .season-item.selected {
     background: rgba(56, 217, 20, 0.15);
     border-color: var(--greenColor);
+}
+
+/* Previously watched seasons (before the last seen) */
+.season-item.selected.watched-previous {
+    background: rgba(56, 217, 20, 0.08);
+    border-color: rgba(56, 217, 20, 0.4);
+}
+
+.season-item.selected.watched-previous .season-number {
+    color: var(--greenColor);
+}
+
+.season-item.selected.watched-previous .season-select-btn {
+    background: rgba(56, 217, 20, 0.2);
+    color: var(--greenColor);
+    border-color: rgba(56, 217, 20, 0.4);
+}
+
+/* Current selection (the last watched season) */
+.season-item.selected.selected-current {
+    background: rgba(56, 217, 20, 0.2);
+    border-color: var(--greenColor);
+    box-shadow: 0 0 15px rgba(56, 217, 20, 0.2);
+}
+
+.season-item.selected.selected-current .season-number {
+    color: var(--greenColor);
 }
 
 .season-info {

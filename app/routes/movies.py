@@ -75,6 +75,10 @@ def remove_movie_seen():
     
     user_id = current_user.id
 
+    # Check if movie is in seen list before removing
+    if not is_movie_in_seen(user_id, movie_id):
+        return jsonify({"success": False, "message": "This movie is not in your seen list."}), 404
+
     # Remove data
     try:
         res = remove_movie_from_seen(user_id=user_id, api_movie_id=movie_id)
@@ -105,6 +109,10 @@ def update_movie_seen():
         return jsonify({"success": False, "message": str(e)}), 400
     
     user_id = current_user.id
+
+    # Check if movie is in seen list before updating
+    if not is_movie_in_seen(user_id, movie_id):
+        return jsonify({"success": False, "message": "This movie is not in your seen list."}), 404
 
     # Update data
     try:
@@ -175,6 +183,10 @@ def remove_movie_watchlist():
         return jsonify({"success": False, "message": str(e)}), 400
     
     user_id = current_user.id
+
+    # Check if movie is in watchlist before removing
+    if not is_movie_in_watchlist(user_id, movie_id):
+        return jsonify({"success": False, "message": "This movie is not in your watchlist."}), 404
 
     # Remove data
     try:

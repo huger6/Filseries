@@ -107,28 +107,59 @@ function setupSeasonsDropdown() {
                 });
                 
                 const data = await response.json();
+                console.log(data);
                 
                 if (response.ok && data.success) {
-                    // Remove selected state from all buttons and items
-                    document.querySelectorAll('.season-select-btn').forEach(b => {
-                        b.classList.remove('selected');
-                        b.innerHTML = '<i class="bi bi-check-circle"></i> Select as Last Seen';
-                    });
+                    const selectedSeasonNum = parseInt(seasonNumber);
+                    
+                    // Update all season items based on their season number
                     document.querySelectorAll('.season-item').forEach(item => {
-                        item.classList.remove('selected');
+                        const itemSeasonNum = parseInt(item.dataset.season);
+                        const itemBtn = item.querySelector('.season-select-btn');
+                        
+                        if (itemSeasonNum < selectedSeasonNum) {
+                            // Seasons before the selected one - mark as watched
+                            item.classList.add('selected', 'watched-previous');
+                            item.classList.remove('selected-current');
+                            if (itemBtn) {
+                                itemBtn.classList.add('selected');
+                                itemBtn.innerHTML = '<i class="bi bi-check-circle-fill"></i> Watched';
+                            }
+                        } else if (itemSeasonNum === selectedSeasonNum) {
+                            // The selected season - mark as current selection
+                            item.classList.add('selected', 'selected-current');
+                            item.classList.remove('watched-previous');
+                            if (itemBtn) {
+                                itemBtn.classList.add('selected');
+                                itemBtn.innerHTML = '<i class="bi bi-check-circle-fill"></i> Last Watched';
+                            }
+                        } else {
+                            // Seasons after the selected one - mark as not watched
+                            item.classList.remove('selected', 'watched-previous', 'selected-current');
+                            if (itemBtn) {
+                                itemBtn.classList.remove('selected');
+                                itemBtn.innerHTML = '<i class="bi bi-check-circle"></i> Select as Last Seen';
+                            }
+                        }
                     });
                     
-                    // Add selected state to clicked button and parent item
-                    btn.classList.add('selected');
-                    btn.innerHTML = '<i class="bi bi-check-circle-fill"></i> Selected';
-                    btn.closest('.season-item').classList.add('selected');
-                    
-                    // Update the watched link to show as watched
+                    // Update the watched link to show progress status
                     if (watchedLink) {
+                        const totalSeasons = parseInt(watchedLink.dataset.totalSeasons) || 1;
+                        
                         watchedLink.dataset.isWatched = 'true';
+                        watchedLink.dataset.lastSeasonSeen = selectedSeasonNum.toString();
                         watchedLink.classList.remove('outlined');
                         watchedLink.classList.add('filled', 'active');
-                        watchedLink.innerHTML = '<i class="bi bi-check-circle-fill"></i><span>Watched</span>';
+                        
+                        // Check if all seasons are watched
+                        if (selectedSeasonNum >= totalSeasons) {
+                            // All seasons watched
+                            watchedLink.innerHTML = '<i class="bi bi-check-circle-fill"></i><span class="btn-text-main">Watched</span>';
+                        } else {
+                            // Still in progress
+                            watchedLink.innerHTML = `<i class="bi bi-check-circle-fill"></i><div style="padding-left: 8px;"><span class="btn-text-main">In Progress</span><span class="btn-text-sub">${selectedSeasonNum}/${totalSeasons} seasons</span></div>`;
+                        }
                     }
                     
                     // Hide watchlist button with animation
@@ -368,10 +399,21 @@ function setupUserActions() {
                     if (data.success) {
                         // Update link appearance
                         link.dataset.isWatched = 'false';
+                        link.dataset.lastSeasonSeen = '0';
                         link.classList.remove('filled', 'active');
                         link.classList.add('outlined');
-                        link.innerHTML = '<i class="bi bi-check-circle"></i><span>Add to Watched</span>';
+                        link.innerHTML = '<i class="bi bi-check-circle"></i><span class=\"btn-text-main\">Add to Watched</span>';
                         showNotification('Removed from your watched list', 'info');
+                        
+                        // Reset all season items
+                        document.querySelectorAll('.season-item').forEach(item => {
+                            item.classList.remove('selected', 'watched-previous', 'selected-current');
+                            const itemBtn = item.querySelector('.season-select-btn');
+                            if (itemBtn) {
+                                itemBtn.classList.remove('selected');
+                                itemBtn.innerHTML = '<i class="bi bi-check-circle"></i> Select as Last Seen';
+                            }
+                        });
                         
                         // Show watchlist button with animation
                         if (watchlistBtn) {

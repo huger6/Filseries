@@ -78,9 +78,13 @@ def remove_serie_from_progress():
     
     user_id = current_user.id
 
+    # Check if series is in progress list before removing
+    if not is_series_in_progress(user_id, series_id):
+        return jsonify({"success": False, "message": "This series is not in your watching list."}), 404
+
     # Remove data
     try:
-        res = remove_series_from_progress(user_id=user_id, api_series_id=series_id)
+        res = remove_series_from_progress(user_id=user_id, api_serie_id=series_id)
         if res:
             return jsonify({"success": True, "message": "Series removed from your watching list."}), 200
         else:
@@ -109,9 +113,13 @@ def update_serie_progress():
     
     user_id = current_user.id
 
+    # Check if series is in progress list before updating
+    if not is_series_in_progress(user_id, series_id):
+        return jsonify({"success": False, "message": "This series is not in your watching list."}), 404
+
     # Update data
     try:
-        res = update_series_progress(user_id=user_id, api_series_id=series_id, season_number=season_number)
+        res = update_series_progress(user_id=user_id, api_serie_id=series_id, last_season_seen=season_number)
         if res:
             return jsonify({"success": True, "message": f"Progress updated to season {season_number}."}), 200
         else:
@@ -141,9 +149,13 @@ def update_serie_status():
     
     user_id = current_user.id
 
+    # Check if series is in progress list before updating
+    if not is_series_in_progress(user_id, series_id):
+        return jsonify({"success": False, "message": "This series is not in your watching list."}), 404
+
     # Update data
     try:
-        res = update_series_status(user_id=user_id, api_series_id=series_id, status=status)
+        res = update_series_status(user_id=user_id, api_serie_id=series_id, status=status)
         if res:
             return jsonify({"success": True, "message": f"Status updated to {status}."}), 200
         else:
@@ -172,18 +184,33 @@ def update_serie_last_season_seen():
     
     user_id = current_user.id
 
-    try:
-        res = update_series_season(user_id=user_id, api_series_id=series_id, season_number=season_number)
-        if res:
-            return jsonify({
-                "success": True, 
-                "message": f"Last season seen updated to Season {season_number}",
-                "season_number": season_number
-            }), 200
-        else:
-            return jsonify({"success": False, "message": "Failed to update last season seen."}), 500
-    except Exception as e:
-        return jsonify({"success": False, "message": str(e)}), 500
+    # Check if series is in progress list before updating
+    if not is_series_in_progress(user_id, series_id):
+        try:
+            res = add_series_to_progress(user_id=user_id, api_serie_id=series_id, last_season_seen=season_number)
+            if res:
+                return jsonify({
+                    "success": True, 
+                    "message": f"Last season seen updated to Season {season_number}",
+                    "season_number": season_number
+                }), 200
+            else:
+                return jsonify({"success": False, "message": "Failed to update last season seen."}), 500
+        except Exception as e:
+            return jsonify({"success": False, "message": str(e)}), 500
+    else:   
+        try:
+            res = update_series_season(user_id=user_id, api_serie_id=series_id, last_season_seen=season_number)
+            if res:
+                return jsonify({
+                    "success": True, 
+                    "message": f"Last season seen updated to Season {season_number}",
+                    "season_number": season_number
+                }), 200
+            else:
+                return jsonify({"success": False, "message": "Failed to update last season seen."}), 500
+        except Exception as e:
+            return jsonify({"success": False, "message": str(e)}), 500
 
 
 @serie_bp.route("/tv/progress/update/rating", methods=["POST"])
@@ -206,9 +233,13 @@ def update_serie_rating():
     
     user_id = current_user.id
 
+    # Check if series is in progress list before updating
+    if not is_series_in_progress(user_id, series_id):
+        return jsonify({"success": False, "message": "This series is not in your watching list."}), 404
+
     # Update data
     try:
-        res = update_series_rating(user_id=user_id, api_series_id=series_id, rating=rating)
+        res = update_series_rating(user_id=user_id, api_serie_id=series_id, new_rating=rating)
         if res:
             return jsonify({"success": True, "message": "Rating updated."}), 200
         else:
@@ -275,6 +306,10 @@ def remove_series_watchlist():
         return jsonify({"success": False, "message": str(e)}), 400
     
     user_id = current_user.id
+
+    # Check if series is in watchlist before removing
+    if not is_series_in_watchlist(user_id, series_id):
+        return jsonify({"success": False, "message": "This series is not in your watchlist."}), 404
 
     # Remove data
     try:

@@ -95,12 +95,27 @@
                         <div class="user-actions">
                             <!-- Watched Toggle Button -->
                             {% if results.media_type == "tv" and results.seasons %}
+                                {% set total_seasons = results.number_of_seasons|default(results.seasons|length) %}
+                                {% set last_seen = results.last_season_seen|default(0) %}
                                 <!-- TV Series: Link to seasons section -->
                                 <a href="#seasons-section" class="title-btn {{ 'filled active' if results.seen else 'outlined' }} toggle-watched-link" 
                                    data-id="{{ results.id }}" 
-                                   data-is-watched="{{ 'true' if results.seen else 'false' }}">
+                                   data-is-watched="{{ 'true' if results.seen else 'false' }}"
+                                   data-total-seasons="{{ total_seasons }}"
+                                   data-last-season-seen="{{ last_seen }}">
                                     <i class="bi bi-{{ 'check-circle-fill' if results.seen else 'check-circle' }}"></i>
-                                    <span>{{ 'Watched' if results.seen else 'Add to Watched' }}</span>
+                                    {% if results.seen %}
+                                        {% if last_seen >= total_seasons %}
+                                            <span class="btn-text-main">Watched</span>
+                                        {% else %}
+                                            <div style="padding-left: 8px;">
+                                                <span class="btn-text-main">In Progress</span>
+                                                <span class="btn-text-sub">{{ last_seen }}/{{ total_seasons }} seasons</span>
+                                            </div>
+                                        {% endif %}
+                                    {% else %}
+                                        <span class="btn-text-main">Add to Watched</span>
+                                    {% endif %}
                                 </a>
                             {% else %}
                                 <!-- Movies: Toggle button -->
@@ -125,6 +140,8 @@
                 
                 <!-- Seasons Section (TV Shows Only) -->
                 {% if results.media_type == "tv" and results.seasons %}
+                {% set total_seasons = results.number_of_seasons|default(results.seasons|length) %}
+                {% set last_seen = results.last_season_seen|default(0) %}
                 <div class="seasons-section" id="seasons-section">
                     <div class="seasons-header" id="seasons-header">
                         <h3>
@@ -137,21 +154,21 @@
                     <div class="seasons-dropdown" id="seasons-dropdown">
                         <div class="seasons-list">
                             {% for season in results.seasons %}
-                            <div class="season-item" data-season="{{ season.season_number }}">
-                                <div class="season-info">
-                                    <span class="season-number">Season {{ season.season_number }}</span>
-                                    {% if season.name and season.name != ("Season " ~ season.season_number) %}
-                                    <span class="season-name">{{ season.name }}</span>
-                                    {% endif %}
-                                    {% if season.episode_count %}
-                                    <span class="season-episodes">{{ season.episode_count }} episodes</span>
-                                    {% endif %}
+                                <div class="season-item{{ ' selected watched-previous' if last_seen > season.season_number else '' }}{{ ' selected selected-current' if last_seen == season.season_number else '' }}" data-season="{{ season.season_number }}">
+                                    <div class="season-info">
+                                        <span class="season-number">Season {{ season.season_number }}</span>
+                                        {% if season.name and season.name != ("Season " ~ season.season_number) %}
+                                            <span class="season-name">{{ season.name }}</span>
+                                        {% endif %}
+                                        {% if season.episode_count %}
+                                            <span class="season-episodes">{{ season.episode_count }} episodes</span>
+                                        {% endif %}
+                                    </div>
+                                    <button class="season-select-btn" data-season="{{ season.season_number }}" data-series-id="{{ results.id }}">
+                                        <i class="bi bi-check-circle"></i>
+                                        Select as Last Seen
+                                    </button>
                                 </div>
-                                <button class="season-select-btn" data-season="{{ season.season_number }}" data-series-id="{{ results.id }}">
-                                    <i class="bi bi-check-circle"></i>
-                                    Select as Last Seen
-                                </button>
-                            </div>
                             {% endfor %}
                         </div>
                         <div class="seasons-actions">
