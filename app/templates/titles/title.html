@@ -16,6 +16,17 @@
         const defaultBackground = "{{url_for('static', filename='img/background.jpeg')}}";
         const isAuthenticated = "{{ 'true' if current_user.is_authenticated else 'false' }}"; // "true" (string!)
         const loginUrl = "{{url_for('auth.login')}}";
+        // TV Series endpoints
+        const tvProgressAddUrl = "{{url_for('series.add_serie_to_progress')}}";
+        const tvProgressRemoveUrl = "{{url_for('series.remove_serie_from_progress')}}";
+        const tvProgressUpdateLastSeasonUrl = "{{url_for('series.update_serie_last_season_seen')}}";
+        const tvWatchlistAddUrl = "{{url_for('series.add_series_watchlist')}}";
+        const tvWatchlistRemoveUrl = "{{url_for('series.remove_series_watchlist')}}";
+        // Movie endpoints
+        const movieSeenAddUrl = "{{url_for('movies.add_movie_seen')}}";
+        const movieSeenRemoveUrl = "{{url_for('movies.remove_movie_seen')}}";
+        const movieWatchlistAddUrl = "{{url_for('movies.add_movie_watchlist')}}";
+        const movieWatchlistRemoveUrl = "{{url_for('movies.remove_movie_watchlist')}}";
     </script>
 {% endblock %}
 

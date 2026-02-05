@@ -10,6 +10,9 @@ NOTIFICATION_TYPES = ("New Season Available", "Warning", "Suggestion", "Normal")
 
 class Notification(db.Model):
     __tablename__ = "notifications"
+    __table_args__ = (
+        db.Index("idx_notifications_user_read_date", "user_id", "is_read", "created_at"),
+    )
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     user_id: Mapped[int | None] = mapped_column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=True)

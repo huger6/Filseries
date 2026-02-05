@@ -9,6 +9,17 @@
     <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/auth.css')}}">
 {% endblock %}
 
+<!-- Scripts -->
+{% block head_scripts %}
+    <script>
+        changePfpUrl = "{{url_for('auth.upload_profile_picture')}}";
+        getPfpUrl = "{{url_for('auth.get_profile_picture')}}";
+        checkUsernameUrl = "{{url_for('auth.check_username_availability')}}";
+        updateUsernameUrl = "{{url_for('auth.update_username')}}";
+        changePasswordUrl = "{{url_for('auth.change_password')}}";
+    </script>
+{% endblock %}
+
 {% block main %}
     <div class="user-page">
         <!-- Profile Header -->
@@ -16,7 +27,7 @@
             <div class="user-avatar-wrapper">
                 <div class="user-avatar" id="userAvatar">
                     {% if has_pfp %}
-                        <img src="{{ url_for('auth.get_profile_picture') }}" alt="Profile Picture" class="avatar-img">
+                        <img src="{{url_for('auth.get_profile_picture')}}" alt="Profile Picture" class="avatar-img">
                     {% else %}
                         <i class="bi bi-person-fill"></i>
                     {% endif %}

@@ -11,7 +11,7 @@ def get_user_stats(user_id: int):
     Returns counts for movies seen, series in progress, and items in watchlist.
     """
     if not user_id:
-        return {"movies_seen": 0, "series_watched": 0, "watchlist_count": 0}
+        return {"movies_seen": 0, "series_watched": 0, "movies_watchlist": 0, "series_watchlist": 0}
     
     try:
         # Count movies seen
@@ -28,20 +28,28 @@ def get_user_stats(user_id: int):
         )
         series_watched = result.first().count
         
-        # Count total watchlist items (movies + series)
+        # Count movies in watchlist
         result = db.session.execute(
-            text("SELECT (SELECT COUNT(*) FROM user_movies_watchlist WHERE user_id=:user_id) + (SELECT COUNT(*) FROM user_series_watchlist WHERE user_id=:user_id) as count"),
+            text("SELECT COUNT(*) as count FROM user_movies_watchlist WHERE user_id=:user_id"),
             {"user_id": user_id}
         )
-        watchlist_count = result.first().count
+        movies_watchlist = result.first().count
+
+        # Count series in watchlist
+        result = db.session.execute(
+            text("SELECT COUNT(*) as count FROM user_series_watchlist WHERE user_id=:user_id"),
+            {"user_id": user_id}
+        )
+        series_watchlist = result.first().count
         
         return {
             "movies_seen": movies_seen,
             "series_watched": series_watched,
-            "watchlist_count": watchlist_count
+            "movies_watchlist": movies_watchlist,
+            "series_watchlist": series_watchlist
         }
     except Exception:
-        return {"movies_seen": 0, "series_watched": 0, "watchlist_count": 0}
+        return {"movies_seen": 0, "series_watched": 0, "movies_watchlist": 0, "series_watchlist": 0}
 
 def get_recent_activity(user_id: int, limit: int = 10):
     """
@@ -75,3 +83,4 @@ def get_recent_activity(user_id: int, limit: int = 10):
         return activity
     except Exception:
         return []
+    

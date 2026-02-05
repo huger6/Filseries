@@ -4,7 +4,7 @@ import asyncio
 # Validations
 from app.validations import validate_title
 # API
-from app.services.api.search_info import search_title, get_title_info
+from app.services.search_info import search_title, get_title_info
 
 titles_bp = Blueprint("titles", __name__, template_folder="../templates/titles")
 

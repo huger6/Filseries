@@ -12,6 +12,7 @@ class UserMoviesSeen(db.Model):
     __tablename__ = "user_movies_seen"
     __table_args__ = (
         CheckConstraint("user_rating >= 0.0 AND user_rating <= 10.0", name="check_movie_rating_range"),
+        db.Index("idx_user_movies_seen_pagination", "user_id", "updated_at", "api_movie_id"),
     )
 
     user_id: Mapped[int] = mapped_column(Integer, ForeignKey("users.id", ondelete="CASCADE"), primary_key=True)
@@ -24,6 +25,7 @@ class UserSeriesProgress(db.Model):
     __tablename__ = "user_series_progress"
     __table_args__ = (
         CheckConstraint("user_rating >= 0.0 AND user_rating <= 10.0", name="check_series_rating_range"),
+        db.Index("idx_user_series_progress_pagination", "user_id", "updated_at", "api_serie_id"),
     )
 
     user_id: Mapped[int] = mapped_column(Integer, ForeignKey("users.id", ondelete="CASCADE"), primary_key=True)

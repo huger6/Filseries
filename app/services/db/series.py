@@ -1,5 +1,6 @@
 from app.extensions import db
 from sqlalchemy import text
+from datetime import datetime
 
 # ============================================================
 # Series - Check Status
@@ -180,6 +181,38 @@ def update_series_rating(user_id: int, api_serie_id: int, new_rating: float):
     
     return True
 
+def get_series_watched(user_id: int, last_serie_id: int = None, last_date: datetime = None, limit: int = 30):
+    """Get paginated series from user's progress/watched list, ordered by updated_at DESC."""
+    if not user_id:
+        return []
+    
+    try:
+        if not (last_serie_id is not None and last_date is not None):
+            query = """
+                    SELECT api_serie_id, last_season_seen, status, user_rating, updated_at
+                    FROM user_series_progress
+                    WHERE user_id=:user_id
+                    ORDER BY updated_at DESC, api_serie_id DESC
+                    LIMIT :limit
+                """
+            res = db.session.execute(text(query), {"user_id": user_id, "limit": limit})
+        else:
+            query = """
+                    SELECT api_serie_id, last_season_seen, status, user_rating, updated_at
+                    FROM user_series_progress
+                    WHERE user_id=:user_id AND (updated_at < :last_date OR (updated_at = :last_date AND api_serie_id < :last_serie_id))
+                    ORDER BY updated_at DESC, api_serie_id DESC
+                    LIMIT :limit
+                """
+            res = db.session.execute(text(query), {"user_id": user_id, "last_date": last_date, "last_serie_id": last_serie_id, "limit": limit})
+        
+        results = [dict(row._mapping) for row in res]
+        return results
+    
+    except Exception:
+        return []
+
+
 # ============================================================
 # Series - Watchlist
 # ============================================================
@@ -221,3 +254,34 @@ def remove_series_from_watchlist(user_id: int, api_serie_id: int):
         return False
     
     return True
+
+def get_series_watchlist(user_id: int, last_serie_id: int = None, last_date: datetime = None, limit: int = 30):
+    """Get paginated series from user's watchlist, ordered by updated_at DESC."""
+    if not user_id:
+        return []
+    
+    try:
+        if not (last_serie_id is not None and last_date is not None):
+            query = """
+                    SELECT api_serie_id, updated_at
+                    FROM user_series_watchlist
+                    WHERE user_id=:user_id
+                    ORDER BY updated_at DESC, api_serie_id DESC
+                    LIMIT :limit
+                """
+            res = db.session.execute(text(query), {"user_id": user_id, "limit": limit})
+        else:
+            query = """
+                    SELECT api_serie_id, updated_at
+                    FROM user_series_watchlist
+                    WHERE user_id=:user_id AND (updated_at < :last_date OR (updated_at = :last_date AND api_serie_id < :last_serie_id))
+                    ORDER BY updated_at DESC, api_serie_id DESC
+                    LIMIT :limit
+                """
+            res = db.session.execute(text(query), {"user_id": user_id, "last_date": last_date, "last_serie_id": last_serie_id, "limit": limit})
+        
+        results = [dict(row._mapping) for row in res]
+        return results
+    
+    except Exception:
+        return []

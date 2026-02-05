@@ -9,7 +9,39 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Initialize scroll indicators
     initializeScrollIndicators();
+    
+    // Initialize Explore Titles button
+    initializeExploreTitlesBtn();
 });
+
+function initializeExploreTitlesBtn() {
+    const exploreTitlesBtn = document.getElementById('explore-titles-btn');
+    const searchOverlay = document.querySelector('.search-overlay');
+    const searchOverlayInput = document.querySelector('.search-overlay-input');
+    const desktopSearchInput = document.querySelector('.search-form .search-input');
+    
+    if (!exploreTitlesBtn) return;
+    
+    exploreTitlesBtn.addEventListener('click', function() {
+        // Check if we're on mobile (search overlay is visible) or desktop
+        const isMobile = searchOverlay && window.getComputedStyle(searchOverlay).display !== 'none';
+        
+        if (isMobile) {
+            // Mobile: open the search overlay
+            searchOverlay.classList.add('active');
+            if (searchOverlayInput) {
+                setTimeout(() => {
+                    searchOverlayInput.focus();
+                }, 100);
+            }
+        } else if (desktopSearchInput) {
+            // Desktop: focus the search input in navbar
+            desktopSearchInput.focus();
+            // Scroll to top to ensure navbar is visible
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    });
+}
 
 function initializeHeroBackdrop() {
     const heroBackdrop = document.getElementById('hero-backdrop');

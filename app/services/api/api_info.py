@@ -115,6 +115,50 @@ async def get_title_info_on_api(session, tmdb_id, search_type):
         return data if data else None
 
 
+async def get_similar_titles(session, tmdb_id: int, media_type: str = "movie"):
+    """Get similar titles from TMDB API.
+    
+    Args:
+        session: aiohttp session
+        tmdb_id: The TMDB ID of the title
+        media_type: 'movie' or 'tv'
+    """
+    url = f"https://api.themoviedb.org/3/{media_type}/{tmdb_id}/similar"
+    params = {"api_key": api_key}
+    
+    async with session.get(url, params=params) as resp:
+        if resp.status != 200:
+            return None
+        
+        data = await resp.json()
+        if not data.get("results"):
+            return None
+    
+    return data["results"]
+
+
+async def get_recommendations(session, tmdb_id: int, media_type: str = "movie"):
+    """Get recommended titles from TMDB API based on a specific title.
+    
+    Args:
+        session: aiohttp session
+        tmdb_id: The TMDB ID of the title
+        media_type: 'movie' or 'tv'
+    """
+    url = f"https://api.themoviedb.org/3/{media_type}/{tmdb_id}/recommendations"
+    params = {"api_key": api_key}
+    
+    async with session.get(url, params=params) as resp:
+        if resp.status != 200:
+            return None
+        
+        data = await resp.json()
+        if not data.get("results"):
+            return None
+    
+    return data["results"]
+
+
 async def get_series_seasons_on_api(session, tmdb_id):
     """Get series seasons info from TMDB API"""
     url = f"https://api.themoviedb.org/3/tv/{tmdb_id}"

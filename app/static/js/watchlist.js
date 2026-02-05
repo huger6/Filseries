@@ -38,7 +38,7 @@ function initializeActions() {
             const id = btn.dataset.id;
             
             try {
-                const response = await fetch(`/watchlist/mark-watched/${id}`, { method: 'POST' });
+                const response = await fetch(`${watchlistMarkWatchedUrl}/${id}`, { method: 'POST' });
                 if (response.ok) {
                     const card = btn.closest('.watchlist-card');
                     card.style.transform = 'scale(0.9)';
@@ -66,7 +66,7 @@ function initializeActions() {
             const id = btn.dataset.id;
             
             try {
-                const response = await fetch(`/watchlist/remove/${id}`, { method: 'POST' });
+                const response = await fetch(`${watchlistRemoveUrl}/${id}`, { method: 'POST' });
                 if (response.ok) {
                     const card = btn.closest('.watchlist-card');
                     card.style.transform = 'scale(0.9)';
@@ -100,7 +100,7 @@ function initializeActions() {
             }
             
             try {
-                const response = await fetch(`/watchlist/rate/${id}`, {
+                const response = await fetch(`${watchlistRateUrl}/${id}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ rating: numRating })

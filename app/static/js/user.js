@@ -26,15 +26,16 @@ document.addEventListener('DOMContentLoaded', () => {
         formData.append('pfp', file);
 
         try {
-            const response = await fetch('{{ url_for("auth.upload_profile_picture") }}', {
+            const response = await fetch(changePfpUrl, {
                 method: 'POST',
                 body: formData
             });
 
             const data = await response.json();
+            console.log(data);
 
             if (response.ok) {
-                userAvatar.innerHTML = `<img src="{{ url_for('auth.get_profile_picture') }}?t=${Date.now()}" alt="Profile Picture" class="avatar-img">`;
+                userAvatar.innerHTML = `<img src="${getPfpUrl}" alt="Profile Picture" class="avatar-img">`;
                 showToast('Profile picture updated!', 'success');
             } else {
                 showToast(data.error || 'Failed to upload image.', 'error');
@@ -117,7 +118,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Debounce the API call
         usernameDebounceTimer = setTimeout(async () => {
             try {
-                const response = await fetch('{{ url_for("auth.check_username_availability") }}', {
+                const response = await fetch(checkUsernameUrl, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ username: value })
@@ -144,7 +145,7 @@ document.addEventListener('DOMContentLoaded', () => {
         saveUsernameBtn.innerHTML = '<i class="bi bi-hourglass-split"></i> Saving...';
         
         try {
-            const response = await fetch('{{ url_for("auth.update_username") }}', {
+            const response = await fetch(updateUsernameUrl, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ username: newUsername })
@@ -247,7 +248,7 @@ document.addEventListener('DOMContentLoaded', () => {
         formData.append('confirm_password', confirmPwInput.value);
         
         try {
-            const response = await fetch('{{ url_for("auth.change_password") }}', {
+            const response = await fetch(changePasswordUrl, {
                 method: 'POST',
                 body: formData
             });

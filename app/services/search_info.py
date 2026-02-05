@@ -1,4 +1,6 @@
+import asyncio
 import aiohttp
+from datetime import datetime
 from app.services.api.api_info import (
     search_title_on_api, 
     get_title_info_on_api, 
@@ -99,6 +101,51 @@ async def search_title(query: str, search_type: str, user_id):
 
         return filtered_data
     
+
+async def fetch_titles_info_batch(title_ids: list, media_type: str) -> dict:
+    """
+    Fetch title information from TMDB API for multiple titles concurrently.
+    Filters results using ALLOWED_FIELDS_SEARCH.
+    
+    Args:
+        title_ids: List of TMDB title IDs to fetch
+        media_type: 'movie' or 'tv'
+        
+    Returns:
+        Dict mapping title_id to processed title info
+    """
+    async def fetch_single(session, title_id):
+        try:
+            data = await get_title_info_on_api(session, title_id, media_type)
+            return title_id, data
+        except Exception:
+            return title_id, None
+    
+    async with aiohttp.ClientSession() as session:
+        tasks = [fetch_single(session, tid) for tid in title_ids]
+        results = await asyncio.gather(*tasks, return_exceptions=True)
+    
+    title_info = {}
+    for result in results:
+        if isinstance(result, tuple) and len(result) == 2:
+            title_id, data = result
+            if data:
+                # Filter and process the data
+                entry = _filter_fields(data, ALLOWED_FIELDS_SEARCH)
+                # Normalize title field (TV shows use 'name' instead of 'title')
+                if "name" in data and "title" not in entry:
+                    entry["title"] = data["name"]
+                # Format release date
+                date_val = data.get("release_date") or data.get("first_air_date")
+                entry["release_date"] = _format_date(date_val)
+                # Set media type
+                entry["media_type"] = media_type
+                entry["id"] = title_id
+                title_info[title_id] = entry
+    
+    return title_info
+
+
 async def get_title_info(id: int, search_type: str, user_id = None) -> dict:
     """Get a title's information from the database"""
     async with aiohttp.ClientSession() as session:

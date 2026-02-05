@@ -14,6 +14,7 @@ function displayTitleInfo() {
     if (!result.id || !result.title) {
         return;
     }
+    console.log(result);
 
     // Poster
     const poster = document.getElementById("title-poster");
@@ -95,7 +96,7 @@ function setupSeasonsDropdown() {
             const watchlistBtn = document.querySelector('.toggle-watchlist');
             
             try {
-                const response = await fetch('/tv/progress/update/last-season-seen', {
+                const response = await fetch(tvProgressUpdateLastSeasonUrl, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -107,7 +108,6 @@ function setupSeasonsDropdown() {
                 });
                 
                 const data = await response.json();
-                console.log(data);
                 
                 if (response.ok && data.success) {
                     const selectedSeasonNum = parseInt(seasonNumber);
@@ -249,8 +249,8 @@ function setupUserActions() {
             
             // Determine the correct endpoint based on current state and media type
             const endpoint = isWatched 
-                ? (mediaType === 'tv' ? '/tv/progress/remove' : '/movies/seen/remove')
-                : (mediaType === 'tv' ? '/tv/progress/add' : '/movies/seen/add');
+                ? (mediaType === 'tv' ? tvProgressRemoveUrl : movieSeenRemoveUrl)
+                : (mediaType === 'tv' ? tvProgressAddUrl : movieSeenAddUrl);
             
             try {
                 btn.disabled = true;
@@ -329,8 +329,8 @@ function setupUserActions() {
             
             // Determine the correct endpoint based on current state and media type
             const endpoint = inWatchlist 
-                ? (mediaType === 'tv' ? '/tv/watchlist/remove' : '/movies/watchlist/remove')
-                : (mediaType === 'tv' ? '/tv/watchlist/add' : '/movies/watchlist/add');
+                ? (mediaType === 'tv' ? tvWatchlistRemoveUrl : movieWatchlistRemoveUrl)
+                : (mediaType === 'tv' ? tvWatchlistAddUrl : movieWatchlistAddUrl);
             
             try {
                 btn.disabled = true;
@@ -389,7 +389,7 @@ function setupUserActions() {
                 
                 const id = link.dataset.id || titleId;
                 
-                fetch('/tv/progress/remove', {
+                fetch(tvProgressRemoveUrl, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ id: parseInt(id) })

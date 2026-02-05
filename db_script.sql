@@ -65,3 +65,21 @@ ALTER TABLE `user_movies_seen` ADD FOREIGN KEY (`user_id`) REFERENCES `users` (`
 ALTER TABLE `user_movies_watchlist` ADD FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 
 ALTER TABLE `user_series_watchlist` ADD FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
+
+
+-- Indexes
+
+-- Movies seen: for pagination queries (ORDER BY updated_at DESC, api_movie_id DESC)
+CREATE INDEX idx_user_movies_seen_pagination ON user_movies_seen (user_id, updated_at DESC, api_movie_id DESC);
+
+-- Movies watchlist: for pagination queries
+CREATE INDEX idx_user_movies_watchlist_pagination ON user_movies_watchlist (user_id, updated_at DESC, api_movie_id DESC);
+
+-- Series progress: for pagination queries
+CREATE INDEX idx_user_series_progress_pagination ON user_series_progress (user_id, updated_at DESC, api_serie_id DESC);
+
+-- Series watchlist: for pagination queries
+CREATE INDEX idx_user_series_watchlist_pagination ON user_series_watchlist (user_id, updated_at DESC, api_serie_id DESC);
+
+-- Notifications: for fetching user notifications (unread first, by date)
+CREATE INDEX idx_notifications_user_read_date ON notifications (user_id, is_read, created_at DESC);

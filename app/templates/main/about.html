@@ -5,135 +5,135 @@
 {% endblock %}
 
 {% block main %}
-<div class="page-container">
-    <div class="content-card">
-        <div class="page-header">
-            <i class="bi bi-info-circle"></i>
-            <h1>About Filseries</h1>
-        </div>
-        
-        <div class="page-content">
-            <section class="content-section">
-                <h2><i class="bi bi-film"></i> What is Filseries?</h2>
-                <p>Filseries is a personal entertainment tracking application that helps you keep a record of all the movies and TV shows you've watched or plan to watch. Never forget what you've seen or lose track of recommendations again!</p>
-            </section>
+    <div class="page-container">
+        <div class="content-card">
+            <div class="page-header">
+                <i class="bi bi-info-circle"></i>
+                <h1>About Filseries</h1>
+            </div>
             
-            <section class="content-section">
-                <h2><i class="bi bi-star"></i> Features</h2>
-                <ul class="feature-list">
-                    <li><i class="bi bi-check-circle"></i> Track movies and TV shows you've watched</li>
-                    <li><i class="bi bi-bookmark"></i> Build your personal watchlist for future viewing</li>
-                    <li><i class="bi bi-search"></i> Search millions of titles from TMDB database</li>
-                    <li><i class="bi bi-fire"></i> Discover trending and popular content</li>
-                    <li><i class="bi bi-trophy"></i> Explore top-rated movies and series</li>
-                </ul>
-            </section>
-            
-            <section class="content-section">
-                <h2><i class="bi bi-database"></i> Powered by TMDB</h2>
-                <p>This product uses the TMDB API but is not endorsed or certified by TMDB. All movie and TV show data is provided by <a href="https://www.themoviedb.org" target="_blank">The Movie Database</a>.</p>
-            </section>
-            
-            <section class="content-section">
-                <h2><i class="bi bi-code-slash"></i> Open Source</h2>
-                <p>Filseries is developed by <a href="https://github.com/huger6" target="_blank">huger6</a>. The project is built with Flask, Python, and modern web technologies.</p>
-            </section>
+            <div class="page-content">
+                <section class="content-section">
+                    <h2><i class="bi bi-film"></i> What is Filseries?</h2>
+                    <p>Filseries is a personal entertainment tracking application that helps you keep a record of all the movies and TV shows you've watched or plan to watch. Never forget what you've seen or lose track of recommendations again!</p>
+                </section>
+                
+                <section class="content-section">
+                    <h2><i class="bi bi-star"></i> Features</h2>
+                    <ul class="feature-list">
+                        <li><i class="bi bi-check-circle"></i> Track movies and TV shows you've watched</li>
+                        <li><i class="bi bi-bookmark"></i> Build your personal watchlist for future viewing</li>
+                        <li><i class="bi bi-search"></i> Search millions of titles from TMDB database</li>
+                        <li><i class="bi bi-fire"></i> Discover trending and popular content</li>
+                        <li><i class="bi bi-trophy"></i> Explore top-rated movies and series</li>
+                    </ul>
+                </section>
+                
+                <section class="content-section">
+                    <h2><i class="bi bi-database"></i> Powered by TMDB</h2>
+                    <p>This product uses the TMDB API but is not endorsed or certified by TMDB. All movie and TV show data is provided by <a href="https://www.themoviedb.org" target="_blank">The Movie Database</a>.</p>
+                </section>
+                
+                <section class="content-section">
+                    <h2><i class="bi bi-code-slash"></i> Open Source</h2>
+                    <p>Filseries is developed by <a href="https://github.com/huger6" target="_blank">huger6</a>. The project is built with Flask, Python, and modern web technologies.</p>
+                </section>
+            </div>
         </div>
     </div>
-</div>
 
-<style>
-.page-container {
-    padding: 40px;
-    max-width: 900px;
-    margin: 0 auto;
-}
-
-.content-card {
-    background: linear-gradient(145deg, rgba(var(--primaryColorRGB), 0.8), rgba(var(--primaryColorRGB), 0.9));
-    border-radius: 24px;
-    padding: 50px;
-    border: 1px solid rgba(var(--accentColorRGB), 0.2);
-}
-
-.page-header {
-    text-align: center;
-    margin-bottom: 40px;
-}
-
-.page-header > i {
-    font-size: 3rem;
-    color: var(--accentColor);
-    margin-bottom: 15px;
-    display: block;
-}
-
-.page-header h1 {
-    font-family: var(--titleFont);
-    font-size: 2.5rem;
-    color: var(--secondaryColor);
-}
-
-.content-section {
-    margin-bottom: 35px;
-}
-
-.content-section h2 {
-    font-size: 1.4rem;
-    color: var(--secondaryColor);
-    margin-bottom: 15px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.content-section h2 i {
-    color: var(--accentColor);
-}
-
-.content-section p {
-    font-size: 1.05rem;
-    line-height: 1.7;
-    color: rgba(var(--secondaryColorRGB), 0.85);
-}
-
-.content-section a {
-    color: var(--accentColor);
-}
-
-.feature-list {
-    list-style: none;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-.feature-list li {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    font-size: 1.05rem;
-    color: rgba(var(--secondaryColorRGB), 0.85);
-}
-
-.feature-list li i {
-    color: var(--accentColor);
-    font-size: 1.1rem;
-}
-
-@media (max-width: 768px) {
+    <style>
     .page-container {
-        padding: 20px;
+        padding: 40px;
+        max-width: 900px;
+        margin: 0 auto;
     }
-    
+
     .content-card {
-        padding: 30px 20px;
+        background: linear-gradient(145deg, rgba(var(--primaryColorRGB), 0.8), rgba(var(--primaryColorRGB), 0.9));
+        border-radius: 24px;
+        padding: 50px;
+        border: 1px solid rgba(var(--accentColorRGB), 0.2);
     }
-    
+
+    .page-header {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+    .page-header > i {
+        font-size: 3rem;
+        color: var(--accentColor);
+        margin-bottom: 15px;
+        display: block;
+    }
+
     .page-header h1 {
-        font-size: 1.8rem;
+        font-family: var(--titleFont);
+        font-size: 2.5rem;
+        color: var(--secondaryColor);
     }
-}
-</style>
+
+    .content-section {
+        margin-bottom: 35px;
+    }
+
+    .content-section h2 {
+        font-size: 1.4rem;
+        color: var(--secondaryColor);
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .content-section h2 i {
+        color: var(--accentColor);
+    }
+
+    .content-section p {
+        font-size: 1.05rem;
+        line-height: 1.7;
+        color: rgba(var(--secondaryColorRGB), 0.85);
+    }
+
+    .content-section a {
+        color: var(--accentColor);
+    }
+
+    .feature-list {
+        list-style: none;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .feature-list li {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 1.05rem;
+        color: rgba(var(--secondaryColorRGB), 0.85);
+    }
+
+    .feature-list li i {
+        color: var(--accentColor);
+        font-size: 1.1rem;
+    }
+
+    @media (max-width: 768px) {
+        .page-container {
+            padding: 20px;
+        }
+        
+        .content-card {
+            padding: 30px 20px;
+        }
+        
+        .page-header h1 {
+            font-size: 1.8rem;
+        }
+    }
+    </style>
 {% endblock %}

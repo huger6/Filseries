@@ -5,124 +5,121 @@
 {% endblock %}
 
 {% block css %}
-<link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/watchlist.css')}}">
-{% endblock %}
-
-{% block head_scripts %}
+    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/watchlist.css')}}">
 {% endblock %}
 
 {% block main %}
-<div class="watchlist-page">
-    <div class="watchlist-header">
-        <h1><i class="bi bi-bookmark-star-fill"></i> My Watchlist</h1>
-        <p>Keep track of what you want to watch and what you've already seen</p>
-    </div>
+    <div class="watchlist-page">
+        <div class="watchlist-header">
+            <h1><i class="bi bi-bookmark-star-fill"></i> My Watchlist</h1>
+            <p>Keep track of what you want to watch and what you've already seen</p>
+        </div>
 
-    <!-- Tabs -->
-    <div class="watchlist-tabs">
-        <button class="tab-btn active" data-tab="to-watch">
-            <i class="bi bi-bookmark"></i>
-            <span>To Watch</span>
-            <span class="tab-count" id="to-watch-count">0</span>
-        </button>
-        <button class="tab-btn" data-tab="watched">
-            <i class="bi bi-check-circle"></i>
-            <span>Watched</span>
-            <span class="tab-count" id="watched-count">0</span>
-        </button>
-    </div>
+        <!-- Tabs -->
+        <div class="watchlist-tabs">
+            <button class="tab-btn active" data-tab="to-watch">
+                <i class="bi bi-bookmark"></i>
+                <span>To Watch</span>
+                <span class="tab-count" id="to-watch-count">0</span>
+            </button>
+            <button class="tab-btn" data-tab="watched">
+                <i class="bi bi-check-circle"></i>
+                <span>Watched</span>
+                <span class="tab-count" id="watched-count">0</span>
+            </button>
+        </div>
 
-    <!-- To Watch Section -->
-    <div class="tab-content active" id="to-watch-content">
-        {% if to_watch and to_watch|length > 0 %}
-        <div class="watchlist-grid">
-            {% for item in to_watch %}
-            <div class="watchlist-card" data-id="{{ item.id }}">
-                <a href="{{url_for('titles.title', media_type=item.media_type, id=item.tmdb_id)}}" class="card-link">
-                    <div class="card-poster">
-                        <img src="{{ 'https://image.tmdb.org/t/p/w500' ~ item.poster_path if item.poster_path else url_for('static', filename='img/defaultPoster.svg') }}" alt="{{ item.title }}" loading="lazy" class="poster-img{% if not item.poster_path %} default-poster{% endif %}">
-                    </div>
-                    <div class="card-content">
-                        <h4 class="card-title">{{ item.title }}</h4>
-                        <div class="card-meta">
-                            <span>{{ item.release_date if item.release_date else 'N/A' }}</span>
-                            <span class="media-type">{{ 'Movie' if item.media_type == 'movie' else 'TV' }}</span>
+        <!-- To Watch Section -->
+        <div class="tab-content active" id="to-watch-content">
+            {% if to_watch and to_watch|length > 0 %}
+                <div class="watchlist-grid">
+                    {% for item in to_watch %}
+                        <div class="watchlist-card" data-id="{{ item.id }}">
+                            <a href="{{url_for('titles.title', media_type=item.media_type, id=item.tmdb_id)}}" class="card-link">
+                                <div class="card-poster">
+                                    <img src="{{ 'https://image.tmdb.org/t/p/w500' ~ item.poster_path if item.poster_path else url_for('static', filename='img/defaultPoster.svg') }}" alt="{{ item.title }}" loading="lazy" class="poster-img{% if not item.poster_path %} default-poster{% endif %}">
+                                </div>
+                                <div class="card-content">
+                                    <h4 class="card-title">{{ item.title }}</h4>
+                                    <div class="card-meta">
+                                        <span>{{ item.release_date if item.release_date else 'N/A' }}</span>
+                                        <span class="media-type">{{ 'Movie' if item.media_type == 'movie' else 'TV' }}</span>
+                                    </div>
+                                </div>
+                            </a>
+                            <div class="card-actions">
+                                <button class="action-btn mark-watched" data-id="{{ item.id }}" title="Mark as Watched">
+                                    <i class="bi bi-check-circle"></i>
+                                </button>
+                                <button class="action-btn remove-item" data-id="{{ item.id }}" title="Remove">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </div>
                         </div>
-                    </div>
-                </a>
-                <div class="card-actions">
-                    <button class="action-btn mark-watched" data-id="{{ item.id }}" title="Mark as Watched">
-                        <i class="bi bi-check-circle"></i>
-                    </button>
-                    <button class="action-btn remove-item" data-id="{{ item.id }}" title="Remove">
-                        <i class="bi bi-trash"></i>
-                    </button>
+                    {% endfor %}
                 </div>
-            </div>
-            {% endfor %}
-        </div>
-        {% else %}
-        <div class="empty-state">
-            <i class="bi bi-bookmark-plus"></i>
-            <h3>Your watchlist is empty</h3>
-            <p>Start adding movies and TV shows you want to watch!</p>
-            <a href="{{url_for('main.home')}}" class="btn-explore">
-                <i class="bi bi-search"></i> Explore Titles
-            </a>
-        </div>
-        {% endif %}
-    </div>
-
-    <!-- Watched Section -->
-    <div class="tab-content" id="watched-content">
-        {% if watched and watched|length > 0 %}
-        <div class="watchlist-grid">
-            {% for item in watched %}
-            <div class="watchlist-card watched" data-id="{{ item.id }}">
-                <a href="{{url_for('titles.title', media_type=item.media_type, id=item.tmdb_id)}}" class="card-link">
-                    <div class="card-poster">
-                        <img src="{{ 'https://image.tmdb.org/t/p/w500' ~ item.poster_path if item.poster_path else url_for('static', filename='img/defaultPoster.svg') }}" alt="{{ item.title }}" loading="lazy" class="poster-img{% if not item.poster_path %} default-poster{% endif %}">
-                        <div class="watched-badge">
-                            <i class="bi bi-check-circle-fill"></i>
-                        </div>
-                    </div>
-                    <div class="card-content">
-                        <h4 class="card-title">{{ item.title }}</h4>
-                        <div class="card-meta">
-                            <span>{{ item.release_date if item.release_date else 'N/A' }}</span>
-                            {% if item.user_rating %}
-                            <span class="user-rating">
-                                <i class="bi bi-star-fill"></i> {{ item.user_rating }}
-                            </span>
-                            {% endif %}
-                        </div>
-                    </div>
-                </a>
-                <div class="card-actions">
-                    <button class="action-btn edit-rating" data-id="{{ item.id }}" title="Rate">
-                        <i class="bi bi-star"></i>
-                    </button>
-                    <button class="action-btn remove-item" data-id="{{ item.id }}" title="Remove">
-                        <i class="bi bi-trash"></i>
-                    </button>
+            {% else %}
+                <div class="empty-state">
+                    <i class="bi bi-bookmark-plus"></i>
+                    <h3>Your watchlist is empty</h3>
+                    <p>Start adding movies and TV shows you want to watch!</p>
+                    <a href="{{url_for('main.home')}}" class="btn-explore">
+                        <i class="bi bi-search"></i> Explore Titles
+                    </a>
                 </div>
-            </div>
-            {% endfor %}
+            {% endif %}
         </div>
-        {% else %}
-        <div class="empty-state">
-            <i class="bi bi-film"></i>
-            <h3>No watched titles yet</h3>
-            <p>Mark titles as watched to keep track of what you've seen!</p>
-            <a href="{{url_for('main.home')}}" class="btn-explore">
-                <i class="bi bi-search"></i> Explore Titles
-            </a>
+
+        <!-- Watched Section -->
+        <div class="tab-content" id="watched-content">
+            {% if watched and watched|length > 0 %}
+                <div class="watchlist-grid">
+                    {% for item in watched %}
+                        <div class="watchlist-card watched" data-id="{{ item.id }}">
+                            <a href="{{url_for('titles.title', media_type=item.media_type, id=item.tmdb_id)}}" class="card-link">
+                                <div class="card-poster">
+                                    <img src="{{ 'https://image.tmdb.org/t/p/w500' ~ item.poster_path if item.poster_path else url_for('static', filename='img/defaultPoster.svg') }}" alt="{{ item.title }}" loading="lazy" class="poster-img{% if not item.poster_path %} default-poster{% endif %}">
+                                    <div class="watched-badge">
+                                        <i class="bi bi-check-circle-fill"></i>
+                                    </div>
+                                </div>
+                                <div class="card-content">
+                                    <h4 class="card-title">{{ item.title }}</h4>
+                                    <div class="card-meta">
+                                        <span>{{ item.release_date if item.release_date else 'N/A' }}</span>
+                                        {% if item.user_rating %}
+                                        <span class="user-rating">
+                                            <i class="bi bi-star-fill"></i> {{ item.user_rating }}
+                                        </span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </a>
+                            <div class="card-actions">
+                                <button class="action-btn edit-rating" data-id="{{ item.id }}" title="Rate">
+                                    <i class="bi bi-star"></i>
+                                </button>
+                                <button class="action-btn remove-item" data-id="{{ item.id }}" title="Remove">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <i class="bi bi-film"></i>
+                    <h3>No watched titles yet</h3>
+                    <p>Mark titles as watched to keep track of what you've seen!</p>
+                    <a href="{{url_for('main.home')}}" class="btn-explore">
+                        <i class="bi bi-search"></i> Explore Titles
+                    </a>
+                </div>
+            {% endif %}
         </div>
-        {% endif %}
     </div>
-</div>
 {% endblock %}
 
 {% block js %}
-<script src="{{url_for('static', filename='js/watchlist.js')}}"></script>
+    <script src="{{url_for('static', filename='js/watchlist.js')}}"></script>
 {% endblock %}
