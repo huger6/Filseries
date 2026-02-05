@@ -26,9 +26,10 @@
     --accentColorRGB: 7, 150, 186;
     --accentColorHover: #22D3EE;
     --accentColorActive: #06B6D4;
-    --accentColorActiveRGB: rgb(6, 182, 212);
+    --accentColorActiveRGB: 6, 182, 212;
     /* Good/Bad colors */
     --greenColor: #38d914;
+    --greenColorRGB: 56, 217, 20;
     --redColor: #f54545;
     /* Fonts */
     --titleFont: 'Poppins', 'Inter', 'sans-serif';

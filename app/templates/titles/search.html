@@ -14,177 +14,180 @@
 {% endblock %}
 
 {% block main %}
-<div class="search-page">
-    <div class="search-header">
-        <div class="search-header-top">
-            <h1 class="search-title">
-                <i class="bi bi-search"></i>
-                Search Results
-            </h1>
-            <!-- Filter Button -->
-            <div class="filter-wrapper">
-                <button type="button" class="filter-toggle-btn" id="filterToggleBtn" aria-label="Toggle filters">
-                    <i class="bi bi-sliders"></i>
-                    <span class="filter-label">Filters</span>
-                </button>
-                <!-- Filter Dropdown -->
-                <div class="filter-dropdown" id="filterDropdown">
-                    <div class="filter-header">
-                        <h6><i class="bi bi-sliders"></i> Filters</h6>
-                        <button type="button" class="filter-reset-btn" id="resetFilters">
-                            <i class="bi bi-arrow-counterclockwise"></i> Reset
-                        </button>
-                    </div>
-                    
-                    <!-- Quick Filters -->
-                    <div class="filter-section">
-                        <label class="filter-section-label">Quick Filters</label>
-                        <div class="quick-filters">
-                            <button type="button" class="quick-filter-btn active" data-filter="relevant">
-                                <i class="bi bi-fire"></i> Relevant Only
-                            </button>
-                            <button type="button" class="quick-filter-btn" data-filter="all">
-                                <i class="bi bi-grid-3x3-gap"></i> All Titles
+    <div class="search-page">
+        <div class="search-header">
+            <div class="search-header-top">
+                <h1 class="search-title">
+                    <i class="bi bi-search"></i>
+                    Search Results
+                </h1>
+                <!-- Filter Button -->
+                <div class="filter-wrapper">
+                    <button type="button" class="filter-toggle-btn" id="filterToggleBtn" aria-label="Toggle filters">
+                        <i class="bi bi-sliders"></i>
+                        <span class="filter-label">Filters</span>
+                    </button>
+                    <!-- Filter Dropdown -->
+                    <div class="filter-dropdown" id="filterDropdown">
+                        <div class="filter-header">
+                            <h6><i class="bi bi-sliders"></i> Filters</h6>
+                            <button type="button" class="filter-reset-btn" id="resetFilters">
+                                <i class="bi bi-arrow-counterclockwise"></i> Reset
                             </button>
                         </div>
-                    </div>
-                    
-                    <!-- Media Type Filter -->
-                    <div class="filter-section">
-                        <label class="filter-section-label">Type</label>
-                        <div class="media-type-filters">
-                            <button type="button" class="media-type-btn active" data-type="all">
-                                <i class="bi bi-collection"></i> All
-                            </button>
-                            <button type="button" class="media-type-btn" data-type="movie">
-                                <i class="bi bi-film"></i> Movies
-                            </button>
-                            <button type="button" class="media-type-btn" data-type="tv">
-                                <i class="bi bi-tv"></i> Series
-                            </button>
+                        
+                        <!-- Quick Filters -->
+                        <div class="filter-section">
+                            <label class="filter-section-label">Quick Filters</label>
+                            <div class="quick-filters">
+                                <button type="button" class="quick-filter-btn active" data-filter="relevant">
+                                    <i class="bi bi-fire"></i> Relevant Only
+                                </button>
+                                <button type="button" class="quick-filter-btn" data-filter="all">
+                                    <i class="bi bi-grid-3x3-gap"></i> All Titles
+                                </button>
+                            </div>
                         </div>
-                    </div>
-                    
-                    <!-- Sort Options -->
-                    <div class="filter-section">
-                        <label class="filter-section-label">Sort By</label>
-                        <div class="sort-options">
-                            <button type="button" class="sort-btn active" data-sort="popularity" data-order="desc">
-                                <i class="bi bi-graph-up"></i> Popular
-                            </button>
-                            <button type="button" class="sort-btn" data-sort="vote_average" data-order="desc">
-                                <i class="bi bi-star-fill"></i> Rating ↓
-                            </button>
-                            <button type="button" class="sort-btn" data-sort="vote_average" data-order="asc">
-                                <i class="bi bi-star"></i> Rating ↑
-                            </button>
-                            <button type="button" class="sort-btn" data-sort="title" data-order="asc">
-                                <i class="bi bi-sort-alpha-down"></i> A-Z
-                            </button>
-                            <button type="button" class="sort-btn" data-sort="title" data-order="desc">
-                                <i class="bi bi-sort-alpha-up"></i> Z-A
-                            </button>
-                            <button type="button" class="sort-btn" data-sort="release_date" data-order="desc">
-                                <i class="bi bi-calendar-event"></i> Newest
-                            </button>
-                            <button type="button" class="sort-btn" data-sort="release_date" data-order="asc">
-                                <i class="bi bi-calendar"></i> Oldest
-                            </button>
+                        
+                        <!-- Media Type Filter -->
+                        <div class="filter-section">
+                            <label class="filter-section-label">Type</label>
+                            <div class="media-type-filters">
+                                <button type="button" class="media-type-btn active" data-type="all">
+                                    <i class="bi bi-collection"></i> All
+                                </button>
+                                <button type="button" class="media-type-btn" data-type="movie">
+                                    <i class="bi bi-film"></i> Movies
+                                </button>
+                                <button type="button" class="media-type-btn" data-type="tv">
+                                    <i class="bi bi-tv"></i> Series
+                                </button>
+                            </div>
                         </div>
-                    </div>
-                    
-                    <!-- Genre Filter -->
-                    <div class="filter-section">
-                        <label class="filter-section-label">Genres</label>
-                        <div class="genre-filters" id="genreFilters">
-                            <button type="button" class="genre-btn active" data-genre="all">All</button>
-                            <button type="button" class="genre-btn" data-genre="28">Action</button>
-                            <button type="button" class="genre-btn" data-genre="12">Adventure</button>
-                            <button type="button" class="genre-btn" data-genre="16">Animation</button>
-                            <button type="button" class="genre-btn" data-genre="35">Comedy</button>
-                            <button type="button" class="genre-btn" data-genre="80">Crime</button>
-                            <button type="button" class="genre-btn" data-genre="99">Documentary</button>
-                            <button type="button" class="genre-btn" data-genre="18">Drama</button>
-                            <button type="button" class="genre-btn" data-genre="10751">Family</button>
-                            <button type="button" class="genre-btn" data-genre="14">Fantasy</button>
-                            <button type="button" class="genre-btn" data-genre="36">History</button>
-                            <button type="button" class="genre-btn" data-genre="27">Horror</button>
-                            <button type="button" class="genre-btn" data-genre="10402">Music</button>
-                            <button type="button" class="genre-btn" data-genre="9648">Mystery</button>
-                            <button type="button" class="genre-btn" data-genre="10749">Romance</button>
-                            <button type="button" class="genre-btn" data-genre="878">Sci-Fi</button>
-                            <button type="button" class="genre-btn" data-genre="53">Thriller</button>
-                            <button type="button" class="genre-btn" data-genre="10752">War</button>
-                            <button type="button" class="genre-btn" data-genre="37">Western</button>
+                        
+                        <!-- Sort Options -->
+                        <div class="filter-section">
+                            <label class="filter-section-label">Sort By</label>
+                            <div class="sort-options">
+                                <button type="button" class="sort-btn active" data-sort="popularity" data-order="desc">
+                                    <i class="bi bi-graph-up"></i> Popular
+                                </button>
+                                <button type="button" class="sort-btn" data-sort="vote_average" data-order="desc">
+                                    <i class="bi bi-star-fill"></i> Rating ↓
+                                </button>
+                                <button type="button" class="sort-btn" data-sort="vote_average" data-order="asc">
+                                    <i class="bi bi-star"></i> Rating ↑
+                                </button>
+                                <button type="button" class="sort-btn" data-sort="title" data-order="asc">
+                                    <i class="bi bi-sort-alpha-down"></i> A-Z
+                                </button>
+                                <button type="button" class="sort-btn" data-sort="title" data-order="desc">
+                                    <i class="bi bi-sort-alpha-up"></i> Z-A
+                                </button>
+                                <button type="button" class="sort-btn" data-sort="release_date" data-order="desc">
+                                    <i class="bi bi-calendar-event"></i> Newest
+                                </button>
+                                <button type="button" class="sort-btn" data-sort="release_date" data-order="asc">
+                                    <i class="bi bi-calendar"></i> Oldest
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Genre Filter -->
+                        <div class="filter-section">
+                            <label class="filter-section-label">Genres</label>
+                            <div class="genre-filters" id="genreFilters">
+                                <button type="button" class="genre-btn active" data-genre="all">All</button>
+                                <button type="button" class="genre-btn" data-genre="28">Action</button>
+                                <button type="button" class="genre-btn" data-genre="12">Adventure</button>
+                                <button type="button" class="genre-btn" data-genre="16">Animation</button>
+                                <button type="button" class="genre-btn" data-genre="35">Comedy</button>
+                                <button type="button" class="genre-btn" data-genre="80">Crime</button>
+                                <button type="button" class="genre-btn" data-genre="99">Documentary</button>
+                                <button type="button" class="genre-btn" data-genre="18">Drama</button>
+                                <button type="button" class="genre-btn" data-genre="10751">Family</button>
+                                <button type="button" class="genre-btn" data-genre="14">Fantasy</button>
+                                <button type="button" class="genre-btn" data-genre="36">History</button>
+                                <button type="button" class="genre-btn" data-genre="27">Horror</button>
+                                <button type="button" class="genre-btn" data-genre="10402">Music</button>
+                                <button type="button" class="genre-btn" data-genre="9648">Mystery</button>
+                                <button type="button" class="genre-btn" data-genre="10749">Romance</button>
+                                <button type="button" class="genre-btn" data-genre="878">Sci-Fi</button>
+                                <button type="button" class="genre-btn" data-genre="53">Thriller</button>
+                                <button type="button" class="genre-btn" data-genre="10752">War</button>
+                                <button type="button" class="genre-btn" data-genre="37">Western</button>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
+            <p class="search-query">
+                {% if results and results|length > 0 %}
+                    Found <span class="result-count" id="resultCount">{{ results|length }}</span> results for "<span class="query-text">{{ query }}</span>"
+                {% else %}
+                    No results found for "<span class="query-text">{{ query }}</span>"
+                {% endif %}
+            </p>
+            <!-- Active Filters Display -->
+            <div class="active-filters" id="activeFilters"></div>
         </div>
-        <p class="search-query">
-            {% if results and results|length > 0 %}
-                Found <span class="result-count" id="resultCount">{{ results|length }}</span> results for "<span class="query-text">{{ query }}</span>"
-            {% else %}
-                No results found for "<span class="query-text">{{ query }}</span>"
-            {% endif %}
-        </p>
-        <!-- Active Filters Display -->
-        <div class="active-filters" id="activeFilters"></div>
-    </div>
-    
-    {% if results and results|length > 0 %}
-    <div id="search-results" data-results='{{ (results | tojson | safe) if results else "[]" }}'>
-        <div class="results-grid" id="resultsGrid">
-            {% for result in results %}
-            <a class="result-card" id="title-{{ result.id }}" href="{{url_for('titles.title', media_type=result.media_type, id=result.id)}}"
-               data-popularity="{{ result.popularity or 0 }}"
-               data-vote="{{ result.vote_average or 0 }}"
-               data-release="{{ result.release_date or '' }}"
-               data-title="{{ result.title }}"
-               data-backdrop="{{ result.backdrop_path or '' }}"
-               data-genres="{{ result.genre_ids | tojson if result.genre_ids else '[]' }}"
-               data-type="{{ result.media_type }}">
-                <div class="card-poster-container">
-                    <div class="card-poster">
-                        <img src="{{ 'https://image.tmdb.org/t/p/w300' ~ result.poster_path if result.poster_path else url_for('static', filename='img/defaultPoster.svg') }}" alt="{{ result.title }}" loading="lazy" class="poster-img{% if not result.poster_path %} default-poster{% endif %}">
-                    </div>
-                    <div class="card-badges">
-                        <span class="media-type-badge">{{ 'Movie' if result.media_type == 'movie' else 'Serie' }}</span>
-                        {% if result.seen %}
-                        <span class="status-badge watched"><i class="bi bi-check-circle-fill"></i></span>
-                        {% elif result.in_watchlist %}
-                        <span class="status-badge watchlist"><i class="bi bi-bookmark-fill"></i></span>
-                        {% endif %}
-                    </div>
+        
+        {% if results and results|length > 0 %}
+            <div id="search-results" data-results='{{ (results | tojson | safe) if results else "[]" }}'>
+                <div class="results-grid" id="resultsGrid">
+                    {% for result in results %}
+                        <a class="result-card" id="title-{{ result.id }}" href="{{url_for('titles.title', media_type=result.media_type, id=result.id)}}"
+                        data-popularity="{{ result.popularity or 0 }}"
+                        data-vote="{{ result.vote_average or 0 }}"
+                        data-release="{{ result.release_date or '' }}"
+                        data-title="{{ result.title }}"
+                        data-backdrop="{{ result.backdrop_path or '' }}"
+                        data-genres="{{ result.genre_ids | tojson if result.genre_ids else '[]' }}"
+                        data-type="{{ result.media_type }}">
+                            <div class="card-poster-container">
+                                <div class="card-poster">
+                                    <img src="{{ 'https://image.tmdb.org/t/p/w300' ~ result.poster_path if result.poster_path else url_for('static', filename='img/defaultPoster.svg') }}" alt="{{ result.title }}" loading="lazy" class="poster-img{% if not result.poster_path %} default-poster{% endif %}">
+                                </div>
+                                <div class="card-badges">
+                                    <span class="media-type-badge">{{ 'Movie' if result.media_type == 'movie' else 'Serie' }}</span>
+                                    {% if result.seen %}
+                                        <span class="status-badge watched">
+                                            <i class="bi bi-check-circle-fill"></i>
+                                            <span class="badge-wrapper"></span>
+                                        </span>
+                                    {% elif result.in_watchlist %}
+                                        <span class="status-badge watchlist"><i class="bi bi-bookmark-fill"></i></span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="card-content">
+                                <h4 class="card-title">{{ result.title }}</h4>
+                                <div class="card-meta">
+                                    <span class="release-date">
+                                        <i class="bi bi-calendar3"></i>
+                                        {{ result.release_date if result.release_date else "N/A" }}
+                                    </span>
+                                    <span class="rating">
+                                        <i class="bi bi-star-fill"></i>
+                                        {{ "%.1f"|format(result.vote_average) if result.vote_average else "N/A" }}
+                                    </span>
+                                </div>
+                            </div>
+                        </a>
+                    {% endfor %}
                 </div>
-                <div class="card-content">
-                    <h4 class="card-title">{{ result.title }}</h4>
-                    <div class="card-meta">
-                        <span class="release-date">
-                            <i class="bi bi-calendar3"></i>
-                            {{ result.release_date if result.release_date else "N/A" }}
-                        </span>
-                        <span class="rating">
-                            <i class="bi bi-star-fill"></i>
-                            {{ "%.1f"|format(result.vote_average) if result.vote_average else "N/A" }}
-                        </span>
-                    </div>
-                </div>
-            </a>
-            {% endfor %}
-        </div>
+            </div>
+        {% else %}
+            <div class="no-results">
+                <i class="bi bi-film"></i>
+                <h3>No titles found</h3>
+                <p>Try searching with different keywords or check your spelling.</p>
+                <a href="{{url_for('main.home')}}" class="btn-home">
+                    <i class="bi bi-house"></i> Back to Home
+                </a>
+            </div>
+        {% endif %}
     </div>
-    {% else %}
-    <div class="no-results">
-        <i class="bi bi-film"></i>
-        <h3>No titles found</h3>
-        <p>Try searching with different keywords or check your spelling.</p>
-        <a href="{{url_for('main.home')}}" class="btn-home">
-            <i class="bi bi-house"></i> Back to Home
-        </a>
-    </div>
-    {% endif %}
-</div>
 {% endblock %}
 
 <!-- Scripts -->
