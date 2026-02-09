@@ -5,121 +5,173 @@
 {% endblock %}
 
 {% block css %}
-    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/watchlist.css')}}">
+    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/title-grid.css')}}">
+{% endblock %}
+
+{% block head_scripts %}
+    <script>
+        const watchlistMoviesUrl = "{{url_for('watchlist.get_watchlist_movies')}}";
+        const watchlistSeriesUrl = "{{url_for('watchlist.get_watchlist_series')}}";
+        const similarTitlesUrl = "{{url_for('watchlist.get_similar_from_watchlist')}}";
+        const recommendationsUrl = "{{url_for('watchlist.get_recommendations_from_watchlist')}}";
+        const titleBaseUrl = "{{url_for('titles.title', media_type='MEDIA_TYPE', id=0)}}".replace('/MEDIA_TYPE/0', '');
+        const defaultPosterUrl = "{{url_for('static', filename='img/defaultPoster.svg')}}";
+    </script>
 {% endblock %}
 
 {% block main %}
-    <div class="watchlist-page">
-        <div class="watchlist-header">
-            <h1><i class="bi bi-bookmark-star-fill"></i> My Watchlist</h1>
-            <p>Keep track of what you want to watch and what you've already seen</p>
-        </div>
-
-        <!-- Tabs -->
-        <div class="watchlist-tabs">
-            <button class="tab-btn active" data-tab="to-watch">
-                <i class="bi bi-bookmark"></i>
-                <span>To Watch</span>
-                <span class="tab-count" id="to-watch-count">0</span>
-            </button>
-            <button class="tab-btn" data-tab="watched">
-                <i class="bi bi-check-circle"></i>
-                <span>Watched</span>
-                <span class="tab-count" id="watched-count">0</span>
-            </button>
-        </div>
-
-        <!-- To Watch Section -->
-        <div class="tab-content active" id="to-watch-content">
-            {% if to_watch and to_watch|length > 0 %}
-                <div class="watchlist-grid">
-                    {% for item in to_watch %}
-                        <div class="watchlist-card" data-id="{{ item.id }}">
-                            <a href="{{url_for('titles.title', media_type=item.media_type, id=item.tmdb_id)}}" class="card-link">
-                                <div class="card-poster">
-                                    <img src="{{ 'https://image.tmdb.org/t/p/w500' ~ item.poster_path if item.poster_path else url_for('static', filename='img/defaultPoster.svg') }}" alt="{{ item.title }}" loading="lazy" class="poster-img{% if not item.poster_path %} default-poster{% endif %}">
-                                </div>
-                                <div class="card-content">
-                                    <h4 class="card-title">{{ item.title }}</h4>
-                                    <div class="card-meta">
-                                        <span>{{ item.release_date if item.release_date else 'N/A' }}</span>
-                                        <span class="media-type">{{ 'Movie' if item.media_type == 'movie' else 'TV' }}</span>
-                                    </div>
-                                </div>
-                            </a>
-                            <div class="card-actions">
-                                <button class="action-btn mark-watched" data-id="{{ item.id }}" title="Mark as Watched">
-                                    <i class="bi bi-check-circle"></i>
-                                </button>
-                                <button class="action-btn remove-item" data-id="{{ item.id }}" title="Remove">
-                                    <i class="bi bi-trash"></i>
-                                </button>
-                            </div>
+    <div class="title-page">
+        <!-- Sticky Filter Bar -->
+        <div class="title-filter-bar">
+            <div class="filter-bar-content">
+                <div class="filter-bar-left">
+                    <h1 class="title-page-heading">
+                        <i class="bi bi-bookmark-fill"></i>
+                        My Watchlist
+                    </h1>
+                    
+                    <div class="filter-divider"></div>
+                    
+                    <!-- Media Type Filters -->
+                    <div class="media-type-filters">
+                        <button type="button" class="media-type-btn active" data-type="all">
+                            <i class="bi bi-collection"></i>
+                            <span>All</span>
+                        </button>
+                        <button type="button" class="media-type-btn" data-type="movie">
+                            <i class="bi bi-film"></i>
+                            <span>Movies</span>
+                        </button>
+                        <button type="button" class="media-type-btn" data-type="tv">
+                            <i class="bi bi-tv"></i>
+                            <span>Series</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="filter-bar-right">
+                    <!-- Results Count -->
+                    <div class="results-count" id="resultsCount">
+                        <span>0</span> titles
+                    </div>
+                    
+                    <!-- Sort Dropdown -->
+                    <div class="sort-wrapper">
+                        <button type="button" class="sort-btn-main" id="sortBtn">
+                            <i class="bi bi-sort-down"></i>
+                            <span id="sortLabel">Recently Added</span>
+                            <i class="bi bi-chevron-down"></i>
+                        </button>
+                        <div class="sort-dropdown" id="sortDropdown">
+                            <button type="button" class="sort-option active" data-sort="updated_at" data-order="desc">
+                                <i class="bi bi-clock-history"></i>
+                                Recently Added
+                            </button>
+                            <button type="button" class="sort-option" data-sort="updated_at" data-order="asc">
+                                <i class="bi bi-clock"></i>
+                                Oldest Added
+                            </button>
+                            <button type="button" class="sort-option" data-sort="title" data-order="asc">
+                                <i class="bi bi-sort-alpha-down"></i>
+                                Title A-Z
+                            </button>
+                            <button type="button" class="sort-option" data-sort="title" data-order="desc">
+                                <i class="bi bi-sort-alpha-up"></i>
+                                Title Z-A
+                            </button>
+                            <button type="button" class="sort-option" data-sort="user_rating" data-order="desc">
+                                <i class="bi bi-star-fill"></i>
+                                Your Rating (High)
+                            </button>
+                            <button type="button" class="sort-option" data-sort="user_rating" data-order="asc">
+                                <i class="bi bi-star"></i>
+                                Your Rating (Low)
+                            </button>
+                            <button type="button" class="sort-option" data-sort="vote_average" data-order="desc">
+                                <i class="bi bi-graph-up"></i>
+                                TMDB Rating
+                            </button>
+                            <button type="button" class="sort-option" data-sort="release_date" data-order="desc">
+                                <i class="bi bi-calendar-event"></i>
+                                Newest Release
+                            </button>
+                            <button type="button" class="sort-option" data-sort="release_date" data-order="asc">
+                                <i class="bi bi-calendar"></i>
+                                Oldest Release
+                            </button>
                         </div>
-                    {% endfor %}
+                    </div>
                 </div>
-            {% else %}
-                <div class="empty-state">
-                    <i class="bi bi-bookmark-plus"></i>
-                    <h3>Your watchlist is empty</h3>
-                    <p>Start adding movies and TV shows you want to watch!</p>
-                    <a href="{{url_for('main.home')}}" class="btn-explore">
-                        <i class="bi bi-search"></i> Explore Titles
-                    </a>
-                </div>
-            {% endif %}
+            </div>
         </div>
 
-        <!-- Watched Section -->
-        <div class="tab-content" id="watched-content">
-            {% if watched and watched|length > 0 %}
-                <div class="watchlist-grid">
-                    {% for item in watched %}
-                        <div class="watchlist-card watched" data-id="{{ item.id }}">
-                            <a href="{{url_for('titles.title', media_type=item.media_type, id=item.tmdb_id)}}" class="card-link">
-                                <div class="card-poster">
-                                    <img src="{{ 'https://image.tmdb.org/t/p/w500' ~ item.poster_path if item.poster_path else url_for('static', filename='img/defaultPoster.svg') }}" alt="{{ item.title }}" loading="lazy" class="poster-img{% if not item.poster_path %} default-poster{% endif %}">
-                                    <div class="watched-badge">
-                                        <i class="bi bi-check-circle-fill"></i>
-                                    </div>
-                                </div>
-                                <div class="card-content">
-                                    <h4 class="card-title">{{ item.title }}</h4>
-                                    <div class="card-meta">
-                                        <span>{{ item.release_date if item.release_date else 'N/A' }}</span>
-                                        {% if item.user_rating %}
-                                        <span class="user-rating">
-                                            <i class="bi bi-star-fill"></i> {{ item.user_rating }}
-                                        </span>
-                                        {% endif %}
-                                    </div>
-                                </div>
-                            </a>
-                            <div class="card-actions">
-                                <button class="action-btn edit-rating" data-id="{{ item.id }}" title="Rate">
-                                    <i class="bi bi-star"></i>
-                                </button>
-                                <button class="action-btn remove-item" data-id="{{ item.id }}" title="Remove">
-                                    <i class="bi bi-trash"></i>
-                                </button>
-                            </div>
-                        </div>
-                    {% endfor %}
-                </div>
-            {% else %}
-                <div class="empty-state">
-                    <i class="bi bi-film"></i>
-                    <h3>No watched titles yet</h3>
-                    <p>Mark titles as watched to keep track of what you've seen!</p>
-                    <a href="{{url_for('main.home')}}" class="btn-explore">
-                        <i class="bi bi-search"></i> Explore Titles
-                    </a>
-                </div>
-            {% endif %}
+        <!-- Watchlist Grid -->
+        <div class="title-grid" id="titleGrid">
+            <!-- Cards will be dynamically loaded -->
         </div>
+        
+        <!-- Empty State -->
+        <div class="empty-state" id="emptyState" style="display: none;">
+            <i class="bi bi-bookmark"></i>
+            <h3>Your watchlist is empty</h3>
+            <p>Start adding movies and TV shows to your watchlist to keep track of what you want to watch.</p>
+            <a href="{{url_for('titles.search')}}" class="btn-explore">
+                <i class="bi bi-search"></i> Explore Titles
+            </a>
+        </div>
+        
+        <!-- Load More Trigger (Intersection Observer) -->
+        <div class="load-more-trigger" id="loadMoreTrigger"></div>
+        
+        <!-- Similar Titles Section -->
+        <section class="carousel-section" id="similarSection" style="display: none;">
+            <div class="carousel-header">
+                <h2 class="carousel-title">
+                    <i class="bi bi-collection-play"></i>
+                    Similar to Your Watchlist
+                </h2>
+                <div class="carousel-controls">
+                    <button class="carousel-btn prev-btn" data-carousel="similar" aria-label="Previous">
+                        <i class="bi bi-chevron-left"></i>
+                    </button>
+                    <button class="carousel-btn next-btn" data-carousel="similar" aria-label="Next">
+                        <i class="bi bi-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="carousel-wrapper">
+                <div class="carousel-track" id="similarTrack">
+                    <!-- Cards loaded dynamically -->
+                </div>
+            </div>
+        </section>
+        
+        <!-- Recommendations Section -->
+        <section class="carousel-section" id="recommendationsSection" style="display: none;">
+            <div class="carousel-header">
+                <h2 class="carousel-title">
+                    <i class="bi bi-stars"></i>
+                    You Might Also Like
+                </h2>
+                <div class="carousel-controls">
+                    <button class="carousel-btn prev-btn" data-carousel="recommendations" aria-label="Previous">
+                        <i class="bi bi-chevron-left"></i>
+                    </button>
+                    <button class="carousel-btn next-btn" data-carousel="recommendations" aria-label="Next">
+                        <i class="bi bi-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="carousel-wrapper">
+                <div class="carousel-track" id="recommendationsTrack">
+                    <!-- Cards loaded dynamically -->
+                </div>
+            </div>
+        </section>
     </div>
 {% endblock %}
 
 {% block js %}
+    <script src="{{url_for('static', filename='js/title-grid.js')}}"></script>
     <script src="{{url_for('static', filename='js/watchlist.js')}}"></script>
 {% endblock %}

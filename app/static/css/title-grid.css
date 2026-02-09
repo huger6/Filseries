@@ -1,6 +1,9 @@
-/* Watched Page Styles */
+/* ================================
+   Title Grid - Shared Styles
+   ================================ */
 
-.watched-page {
+/* Page Container */
+.title-page {
     padding: 0px 40px 40px;
     max-width: 1600px;
     margin: 0 auto;
@@ -8,7 +11,7 @@
 }
 
 /* Sticky Filter Bar */
-.watched-filter-bar {
+.title-filter-bar {
     position: sticky;
     top: 90px; /* Below navbar */
     z-index: 100;
@@ -16,7 +19,7 @@
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     padding: 15px 0;
-    margin: 0 -40px 30px;
+    margin: 0 0px 30px;
     padding-left: 40px;
     padding-right: 40px;
     border-radius: 48px;
@@ -24,7 +27,7 @@
     transition: box-shadow 0.3s ease;
 }
 
-.watched-filter-bar.scrolled {
+.title-filter-bar.scrolled {
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
 }
 
@@ -50,7 +53,7 @@
 }
 
 /* Page Title (in filter bar) */
-.watched-title {
+.title-page-heading {
     font-family: var(--titleFont);
     font-size: 1.5rem;
     font-weight: 700;
@@ -62,7 +65,7 @@
     white-space: nowrap;
 }
 
-.watched-title i {
+.title-page-heading i {
     color: var(--accentColor);
 }
 
@@ -205,15 +208,15 @@
     font-weight: 600;
 }
 
-/* Watched Grid */
-.watched-grid {
+/* Title Grid */
+.title-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
     gap: 25px;
 }
 
-/* Watched Card */
-.watched-card {
+/* Title Card */
+.title-card {
     position: relative;
     border-radius: 16px;
     overflow: hidden;
@@ -222,17 +225,17 @@
     transition: all 0.3s ease;
 }
 
-.watched-card:hover {
+.title-card:hover {
     transform: translateY(-5px);
     box-shadow: 0 12px 40px rgba(var(--accentColorRGB), 0.2);
 }
 
-.watched-card .card-link {
+.title-card .card-link {
     display: block;
     text-decoration: none;
 }
 
-.watched-card .card-poster {
+.title-card .card-poster {
     position: relative;
     width: 100%;
     aspect-ratio: 2/3;
@@ -240,7 +243,7 @@
     overflow: hidden;
 }
 
-.watched-card .poster-img {
+.title-card .poster-img {
     width: 100%;
     height: 100%;
     object-fit: cover;
@@ -248,12 +251,12 @@
     transition: transform 0.3s ease;
 }
 
-.watched-card .poster-img.default-poster {
+.title-card .poster-img.default-poster {
     object-fit: contain;
     background-color: rgba(var(--primaryColorRGB), 0.95);
 }
 
-.watched-card:hover .poster-img {
+.title-card:hover .poster-img {
     transform: scale(1.05);
 }
 
@@ -431,6 +434,22 @@
     color: var(--primaryColor);
 }
 
+/* End of Results */
+.end-of-results {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 30px 20px;
+    color: rgba(var(--secondaryColorRGB), 0.5);
+    font-size: 0.95rem;
+}
+
+.end-of-results i {
+    font-size: 1.5rem;
+    color: var(--accentColor);
+}
+
 /* Skeleton Loading Cards */
 .skeleton-card {
     border-radius: 16px;
@@ -455,13 +474,16 @@
     100% { background-position: -200% 0; }
 }
 
-/* Responsive */
+/* ================================
+   Responsive - Title Grid Layout
+   ================================ */
+
 @media (max-width: 992px) {
-    .watched-page {
+    .title-page {
         padding: 15px 25px 40px;
     }
     
-    .watched-filter-bar {
+    .title-filter-bar {
         margin: 0 -25px 25px;
         padding-left: 25px;
         padding-right: 25px;
@@ -486,17 +508,17 @@
 }
 
 @media (max-width: 768px) {
-    .watched-page {
+    .title-page {
         padding: 10px 15px 40px;
     }
     
-    .watched-filter-bar {
+    .title-filter-bar {
         top: 60px;
         margin: 0 -15px 20px;
-        padding: 12px 15px;
+        padding: 12px 25px;
     }
     
-    .watched-title {
+    .title-page-heading {
         font-size: 1.2rem;
     }
     
@@ -509,14 +531,14 @@
         display: none;
     }
     
-    .watched-grid {
+    .title-grid {
         grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
         gap: 15px;
     }
 }
 
 @media (max-width: 480px) {
-    .watched-grid {
+    .title-grid {
         grid-template-columns: repeat(2, 1fr);
         gap: 12px;
     }

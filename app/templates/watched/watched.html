@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block css %}
-    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/watched.css')}}">
+    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/title-grid.css')}}">
 {% endblock %}
 
 {% block head_scripts %}
@@ -20,12 +20,12 @@
 {% endblock %}
 
 {% block main %}
-    <div class="watched-page">
+    <div class="title-page">
         <!-- Sticky Filter Bar -->
-        <div class="watched-filter-bar">
+        <div class="title-filter-bar">
             <div class="filter-bar-content">
                 <div class="filter-bar-left">
-                    <h1 class="watched-title">
+                    <h1 class="title-page-heading">
                         <i class="bi bi-eye-fill"></i>
                         My Watched
                     </h1>
@@ -106,7 +106,7 @@
         </div>
 
         <!-- Watched Grid -->
-        <div class="watched-grid" id="watchedGrid">
+        <div class="title-grid" id="titleGrid">
             <!-- Cards will be dynamically loaded -->
         </div>
         
@@ -122,12 +122,6 @@
         
         <!-- Load More Trigger (Intersection Observer) -->
         <div class="load-more-trigger" id="loadMoreTrigger"></div>
-        
-        <!-- End of Results -->
-        <div class="end-of-results" id="endOfResults" style="display: none;">
-            <i class="bi bi-check-circle"></i>
-            <p>You've seen it all!</p>
-        </div>
         
         <!-- Similar Titles Section -->
         <section class="carousel-section" id="similarSection" style="display: none;">
@@ -178,5 +172,6 @@
 {% endblock %}
 
 {% block js %}
+    <script src="{{url_for('static', filename='js/title-grid.js')}}"></script>
     <script src="{{url_for('static', filename='js/watched.js')}}"></script>
 {% endblock %}
