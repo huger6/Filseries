@@ -2,7 +2,6 @@ flask
 flask-sqlalchemy 
 flask-bcrypt 
 flask-login 
-email-validator
 python-dotenv
 aiohttp
 pymysql
