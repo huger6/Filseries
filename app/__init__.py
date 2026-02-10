@@ -6,6 +6,7 @@ from app.routes import blueprints
 from app.utils.converters import MediaTypeConverter
 from app.services.db import get_user_pfp
 from datetime import timedelta
+import webbrowser
 
 
 @login_manager.user_loader
@@ -43,4 +44,7 @@ def create_app():
     app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(days=30)
 
     return app
+
+def open_browser():
+    webbrowser.open_new("http://127.0.0.1:5000/")
 

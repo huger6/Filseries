@@ -209,10 +209,60 @@ Filseries/
 
 ---
 
-## 🔮 Future Enhancements
+## � Building a Standalone Executable
+
+You can package Filseries into a single-file executable (`.exe` on Windows, binary on Linux/macOS) using [PyInstaller](https://pyinstaller.org/). This allows running the app without a separate Python installation.
+
+### 1. Install PyInstaller
+
+```bash
+pip install pyinstaller
+```
+
+### 2. Build the executable
+
+> **Important:** The `--add-data` flag uses a different separator depending on the OS:
+> - **Windows** → semicolon `;`
+> - **Linux / macOS** → colon `:`
+
+**Windows:**
+
+```bash
+pyinstaller --noconfirm --onefile --windowed --add-data "app/static;app/static" --add-data "app/templates;app/templates" --add-data "keys.env;." app.py
+```
+
+**Linux / macOS:**
+
+```bash
+pyinstaller --noconfirm --onefile --windowed --add-data "app/static:app/static" --add-data "app/templates:app/templates" --add-data "keys.env:." app.py
+```
+
+| Flag | Purpose |
+|------|---------|
+| `--noconfirm` | Overwrite the output directory without asking |
+| `--onefile` | Bundle everything into a single executable |
+| `--windowed` | Suppress the console window on launch (Windows) |
+| `--add-data` | Include non-Python files (templates, static assets, env) |
+
+### 3. Run the executable
+
+After the build completes, the executable will be located in the `dist/` folder:
+
+```
+dist/
+└── app.exe        # Windows
+└── app             # Linux / macOS
+```
+
+Simply run the executable — it behaves the same as `python app.py`. Make sure a MySQL server is accessible with the connection details specified in your `keys.env`.
+
+> **Note:** The `keys.env` file is bundled inside the executable. If you need to change environment variables, you must rebuild the executable.
+
+---
+
+## �🔮 Future Enhancements
 
 - **Notifications** — the data model and database layer are ready; route implementation and frontend integration are pending
-- **User statistics dashboard** — backend queries for stats and recent activity are implemented but not yet exposed
 - **Unit and integration tests**
 
 ---
