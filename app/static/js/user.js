@@ -1,5 +1,29 @@
 document.addEventListener('DOMContentLoaded', () => {
     // =========================
+    // User Stats
+    // =========================
+    fetchUserStats();
+
+    async function fetchUserStats() {
+        try {
+            const response = await fetch(userStatsUrl);
+            if (!response.ok) throw new Error('Failed to fetch stats');
+            const data = await response.json();
+
+            document.getElementById('stat-titles-watched').textContent = data.titles_watched ?? 0;
+            document.getElementById('stat-in-watchlist').textContent = data.in_watchlist ?? 0;
+            document.getElementById('stat-movies-seen').textContent = data.movies_seen ?? 0;
+            document.getElementById('stat-series-watched').textContent = data.series_watched ?? 0;
+        } catch (error) {
+            console.error('Error fetching user stats:', error);
+            document.getElementById('stat-titles-watched').textContent = 0;
+            document.getElementById('stat-in-watchlist').textContent = 0;
+            document.getElementById('stat-movies-seen').textContent = 0;
+            document.getElementById('stat-series-watched').textContent = 0;
+        }
+    }
+
+    // =========================
     // Avatar Upload
     // =========================
     const avatarWrapper = document.querySelector('.user-avatar-wrapper');

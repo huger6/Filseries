@@ -3,6 +3,7 @@ from flask_login import login_required, current_user, login_user, logout_user
 from app.validations import validateRegister, validateLogin, validateUsername, validatePassword, validatePasswordConfirm
 from app.exceptions import RegisterError, LoginError, AuthError
 from app.services.db import register_new_user, get_user_pfp, update_user_pfp, username_available, change_user_username as db_change_username, change_user_password
+from app.services.db.user_stats import get_user_stats
 from app.utils.valid_next_page import enpoint_is_valid, is_safe_url
 from app.extensions import bcrypt
 
@@ -20,7 +21,7 @@ def login():
 
         try:
             user = validateLogin(username, pw)
-            login_user(user)
+            login_user(user, remember=True)
             
             # Redirect to next page if provided, otherwise home
             next_page = request.args.get('next')
@@ -152,6 +153,24 @@ def update_username():
 def user():
     has_pfp = get_user_pfp(current_user.get_id()) is not None
     return render_template("user.html", page="user", has_pfp=has_pfp)
+
+@auth_bp.route("/user/stats", methods=["GET"])
+@login_required
+def get_user_statistics():
+    """Return user statistics as JSON for the profile page"""
+    stats = get_user_stats(current_user.id)
+    
+    titles_watched = stats.get("movies_seen", 0) + stats.get("series_watched", 0)
+    in_watchlist = stats.get("movies_watchlist", 0) + stats.get("series_watchlist", 0)
+    
+    return jsonify({
+        "titles_watched": titles_watched,
+        "in_watchlist": in_watchlist,
+        "movies_seen": stats.get("movies_seen", 0),
+        "series_watched": stats.get("series_watched", 0),
+        "movies_watchlist": stats.get("movies_watchlist", 0),
+        "series_watchlist": stats.get("series_watchlist", 0)
+    })
 
 @auth_bp.route("/user/profile-picture", methods=["GET"])
 @login_required

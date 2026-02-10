@@ -5,6 +5,7 @@ from app.extensions import app, login_manager, db
 from app.routes import blueprints
 from app.utils.converters import MediaTypeConverter
 from app.services.db import get_user_pfp
+from datetime import timedelta
 
 
 @login_manager.user_loader
@@ -39,6 +40,7 @@ def create_app():
 
     login_manager.init_app(app)
     login_manager.login_view = "auth.login"  # Redirects to login if user not logged in
+    app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(days=30)
 
     return app
 

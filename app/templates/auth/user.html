@@ -17,6 +17,7 @@
         checkUsernameUrl = "{{url_for('auth.check_username_availability')}}";
         updateUsernameUrl = "{{url_for('auth.update_username')}}";
         changePasswordUrl = "{{url_for('auth.change_password')}}";
+        userStatsUrl = "{{url_for('auth.get_user_statistics')}}";
     </script>
 {% endblock %}
 
@@ -47,16 +48,20 @@
         <!-- Stats Section -->
         <div class="user-stats">
             <div class="stat-card">
-                <div class="stat-number">0</div>
+                <div class="stat-number" id="stat-titles-watched">-</div>
                 <div class="stat-label">Titles Watched</div>
             </div>
             <div class="stat-card">
-                <div class="stat-number">0</div>
+                <div class="stat-number" id="stat-in-watchlist">-</div>
                 <div class="stat-label">In Watchlist</div>
             </div>
             <div class="stat-card">
-                <div class="stat-number">0</div>
-                <div class="stat-label">Hours Watched</div>
+                <div class="stat-number" id="stat-movies-seen">-</div>
+                <div class="stat-label">Movies Seen</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="stat-series-watched">-</div>
+                <div class="stat-label">Series Watched</div>
             </div>
         </div>
 
